@@ -309,13 +309,17 @@
    */
   const mainContainer = select('#main');
   if (mainContainer) {
-    setTimeout(() => {
-      new ResizeObserver(function() {
-        select('.echart', true).forEach(getEchart => {
-          echarts.getInstanceByDom(getEchart).resize();
-        })
-      }).observe(mainContainer);
-    }, 200);
+    const observer = new ResizeObserver(function() {
+      select('.echart', true).forEach(getEchart => {
+        echarts.getInstanceByDom(getEchart).resize();
+      })
+    });
+    observer.observe(mainContainer);
+
+    window.addEventListener('resize', () => {
+      observer.disconnect();
+      observer.observe(mainContainer);
+    });
   }
 
 })();

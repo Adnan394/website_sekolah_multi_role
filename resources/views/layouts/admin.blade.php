@@ -9,8 +9,7 @@
     <meta content="" name="keywords" />
 
     <!-- Favicons -->
-    <link href="{{ asset('NiceAdmin/assets/img/favicon.png') }}" rel="icon" />
-    <link href="{{ asset('NiceAdmin/assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon" />
+    <link href="{{ asset('assets/img/logo.png') }}" rel="icon" />
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect" />
@@ -24,6 +23,7 @@
     <link href="{{ asset('NiceAdmin/assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet" />
     <link href="{{ asset('NiceAdmin/assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet" />
     <link href="{{ asset('NiceAdmin/assets/vendor/simple-datatables/style.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('NiceAdmin/assets/css/style.css') }}" rel="stylesheet" />
@@ -36,6 +36,16 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+  <style>
+    .sidebar-nav .nav-content {
+      padding-left: 15px;
+    }
+
+    .sidebar-nav .nav-content .nav-content {
+      padding-left: 20px;
+    }
+  </style>
   </head>
 
   <body>
@@ -43,20 +53,11 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
       <div class="d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
-          <img src="{{ asset('NiceAdmin/assets/img/logo.png') }}" alt="" />
-          <span class="d-none d-lg-block">Dashboard</span>
+          <img src="{{ asset('assets/img/logo.png') }}"  alt="" class="ms-3" style="transform: scale(1.5);" />
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
       </div>
       <!-- End Logo -->
-
-      <div class="search-bar">
-        <form class="search-form d-flex align-items-center" method="POST" action="#">
-          <input type="text" name="query" placeholder="Search" title="Enter search keyword" />
-          <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-        </form>
-      </div>
-      <!-- End Search Bar -->
 
       <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
@@ -69,14 +70,13 @@
 
           <li class="nav-item dropdown pe-3">
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-              <img src="{{ asset('NiceAdmin/assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle" />
-              <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span> </a
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->username }}</span> </a
             ><!-- End Profile Iamge Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
               <li class="dropdown-header">
-                <h6>Kevin Anderson</h6>
-                <span>Web Designer</span>
+                <h6>{{ Auth::user()->username ?? ''}}</h6>
+                <span>{{ Auth::user()->role }}</span>
               </li>
               <li>
                 <hr class="dropdown-divider" />
@@ -116,44 +116,182 @@
             <span>Dashboard</span>
           </a>
         </li>
+        <!-- End Dashboard Nav -->
+
+        @if(Auth::user()->role == 'Admin')
+        <li class="nav-heading">Setting Umum</li>
         <li class="nav-item">
-          <a class="nav-link collapsed" href="index.html">
+          <!-- Menu Level 1 -->
+          <a class="nav-link collapsed" data-bs-target="#setting-profile" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-gear-wide-connected"></i>
+            <span>Setting Profile</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+
+          <ul id="setting-profile" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+            <!-- Sub Menu Level 2 -->
+            <li class="nav-item">
+              <a class="nav-link collapsed" href="{{ route('tentang_kami.index') }}">
+                <i class="bi bi-circle"></i>
+                <span>Tentang Kami</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+              </a>
+            </li>
+
+            <!-- Sub Menu Level 2 -->
+            <li class="nav-item">
+              <a class="nav-link {{ $active == 'struktur' ? '' : 'collapsed' }}" href="{{ route('struktur.index') }}">
+              {{-- <a class="nav-link collapsed" href=""> --}}
+                <i class="bi bi-circle"></i>
+                <span>Struktur Organisasi</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+              </a>
+            </li>
+
+            <!-- Sub Menu -->
+            <li class="nav-item">
+              <a class="nav-link {{ $active == 'fasilitas' ? '' : 'collapsed' }}" href="{{ route('fasilitas.index') }}">
+                <i class="bi bi-circle"></i>
+                <span>Fasilitas Sekolah</span>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'berita' ? '' : 'collapsed' }}" href="{{ route('berita.index') }}">
             <i class="bi bi-globe"></i>
             <span>Berita</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link collapsed" href="index.html">
+          <a class="nav-link {{ $active == 'kurikulum' ? '' : 'collapsed' }}" href="{{ route('kurikulum.index') }}">
             <i class="bi bi-journals"></i>
             <span>Informasi Kurikulum</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link collapsed" href="index.html">
+          <a class="nav-link {{ $active == 'prestasi' ? '' : 'collapsed' }}" href="{{ route('prestasi.index') }}">
             <i class="bi bi-trophy-fill"></i>
             <span>Prestasi</span>
           </a>
         </li>
-        <!-- End Dashboard Nav -->
-
-        <li class="nav-heading">Setting Umum</li>
         <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"><i class="bi bi-gear-wide-connected"></i><span>Setting Profile</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-          <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-            <li>
-              <a href="components-alerts.html"> <i class="bi bi-circle"></i><span>Tentang Kami</span> </a>
+          <a class="nav-link {{ $active == 'kontak' ? '' : 'collapsed' }}" href="{{ route('kontak.index') }}">
+            <i class="bi bi-telephone"></i>
+            <span>Kontak Kami</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'kelas' ? '' : 'collapsed' }}" href="{{ route('kelas.index') }}">
+            <i class="bi bi-file"></i>
+            <span>Kelas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'pelajaran' ? '' : 'collapsed' }}" href="{{ route('pelajaran.index') }}">
+            <i class="bi bi-file"></i>
+            <span>Pelajaran</span>
+          </a>
+        </li>
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+        <!-- ================= SETTING GURU ================= -->
+        <li class="nav-heading">Setting Guru dan Siswa</li>
+
+        <li class="nav-item">
+          <a class="nav-link {{ in_array($active, ['data_guru', 'map_kelas_guru']) ? '' : 'collapsed' }}" 
+              data-bs-target="#guru-siswa" 
+              data-bs-toggle="collapse" 
+              href="#">
+            <i class="bi bi-journal"></i><span>Data Guru dan Siswa</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+
+          <ul id="guru-siswa" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li class="">
+              <a class="{{ $active == 'data_guru' ? '' : 'collapsed' }}" href="{{ route('guru.index') }}"><i class="bi bi-person"></i><span>Data Guru</span></a>
             </li>
-            <li>
-              <a href="components-alerts.html"> <i class="bi bi-circle"></i><span>Kontak Kami</span> </a>
+            <li class="">
+              <a class="{{ $active == 'map_kelas_guru' ? '' : 'collapsed' }}" href="{{ route('kelas-guru.index') }}"><i class="bi bi-person"></i><span>Map Guru Kelas</span></a>
             </li>
-            <li>
-              <a href="components-alerts.html"> <i class="bi bi-circle"></i><span>Struktur Organisasi</span> </a>
+            <li class="">
+              <a class="{{ $active == 'data_siswa' ? '' : 'collapsed' }}" href="{{ route('siswa.index') }}"><i class="bi bi-person"></i><span>Data Siswa</span></a>
             </li>
-            <li>
-              <a href="components-alerts.html"> <i class="bi bi-circle"></i><span>Fasilitas Sekolah</span> </a>
+            <li class="">
+              <a class="{{ $active == 'map_kelas_siswa' ? '' : 'collapsed' }}" href="{{ route('kelas-siswa.index') }}"><i class="bi bi-person"></i><span>Map Siswa Kelas</span></a>
             </li>
           </ul>
         </li>
+
+        <!-- Materi Pembelajaran -->
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'materi_pelajaran' ? '' : 'collapsed' }}" data-bs-target="#guru-materi" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-journal"></i><span>Setting Materi Pembelajaran</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+
+          <ul id="guru-materi" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li><a href="{{ route('materi-pembelajaran.index') }}"><i class="bi bi-circle"></i><span>Setting Materi Pembelajaran</span></a></li>
+            <li><a href="{{ route('jadwal-tugas.index') }}"><i class="bi bi-circle"></i><span>Setting Jadwal Tugas</span></a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'jadwal_pelajaran' ? '' : 'collapsed' }}" href="{{ route('jadwal-pelajaran.index') }}"><i class="bi bi-calendar"></i><span>Setting Jadwal Pelajaran</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'absensi' ? '' : 'collapsed' }}" href="{{ route('absensi.index') }}"><i class="bi bi-check2-square"></i><span>Setting Absensi</span></a>
+        </li>
+
+        
+        @endif
+        
+        @if (Auth::user()->role == 'siswa')
+          <li class="nav-item">
+            <a class="nav-link {{ $active == 'tugas_siswa' ? '' : 'collapsed' }}" href="{{ route('siswa-tugas.index') }}"><i class="bi bi-bar-chart"></i><span>Tugas</span></a>
+          </li>
+        @endif
+
+
+        <!-- ================= SETTING SISWA ================= -->
+        {{-- <li class="nav-heading">Setting Siswa</li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#"><i class="bi bi-person"></i><span>Setting Profil</span></a>
+        </li>
+
+        <!-- Materi Pembelajaran -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#siswa-materi" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-journal"></i><span>Setting Materi Pembelajaran</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+
+          <ul id="siswa-materi" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li><a href="#"><i class="bi bi-circle"></i><span>Setting Materi Pembelajaran</span></a></li>
+            <li><a href="#"><i class="bi bi-circle"></i><span>Setting Jadwal Tugas</span></a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#"><i class="bi bi-calendar"></i><span>Setting Jadwal Pelajaran</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#"><i class="bi bi-check2-square"></i><span>Setting Absensi</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="#"><i class="bi bi-bar-chart"></i><span>Setting Penilaian</span></a>
+        </li>
+
+      </ul> --}}
+        {{-- <li class="nav-heading">Setting Data User</li> --}}
+
 
         <li class="nav-item">
           <a class="nav-link collapsed" href="{{ route('logout') }}">
@@ -170,17 +308,6 @@
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-      <div class="copyright">
-        &copy; Copyright <strong><span>NiceAdmin</span></strong
-        >. All Rights Reserved
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
     </footer>
     <!-- End Footer -->
 
@@ -206,8 +333,8 @@
         if('{{ session('success') }}'){
             Swal.fire({
                 icon: 'success',
-                title: 'Selamat Datang',
-                text: '{{ Auth::user()->username }}',
+                title: 'Success!',
+                text: '{{ session('success') }}',
                 showConfirmButton: true,
             });
         }

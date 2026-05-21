@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\MasterUser;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,8 +41,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    public function master_user() {
-        return $this->hasOne(masterUser::class);
+    public function guru() {
+        return $this->hasOne(\App\Models\Guru::class);
     }
 }

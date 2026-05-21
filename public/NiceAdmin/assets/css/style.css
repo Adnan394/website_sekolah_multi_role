@@ -15,17 +15,17 @@
 
 body {
   font-family: "Open Sans", sans-serif;
-  background: #f6f9ff;
+  background: #fffafa;
   color: #444444;
 }
 
 a {
-  color: #4154f1;
+  color: #890A0A;
   text-decoration: none;
 }
 
 a:hover {
-  color: #717ff5;
+  color: #b00a0a;
   text-decoration: none;
 }
 
@@ -77,7 +77,7 @@ h6 {
   right: 15px;
   bottom: 15px;
   z-index: 99999;
-  background: #4154f1;
+  background: #890A0A;
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -282,8 +282,8 @@ h6 {
 }
 
 .accordion-button:not(.collapsed) {
-  color: #012970;
-  background-color: #f6f9ff;
+  color: #890A0A;
+  background-color: #fff3f3;
 }
 
 .accordion-flush .accordion-button {
@@ -294,7 +294,7 @@ h6 {
 
 .accordion-flush .accordion-button:not(.collapsed) {
   box-shadow: none;
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .accordion-flush .accordion-body {
@@ -342,13 +342,13 @@ h6 {
 
 .nav-tabs-bordered .nav-link:hover,
 .nav-tabs-bordered .nav-link:focus {
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .nav-tabs-bordered .nav-link.active {
   background-color: #fff;
-  color: #4154f1;
-  border-bottom: 2px solid #4154f1;
+  color: #890A0A;
+  border-bottom: 2px solid #890A0A;
 }
 
 /*--------------------------------------------------------------
@@ -674,7 +674,7 @@ h6 {
 .sidebar-nav .nav-heading {
   font-size: 11px;
   text-transform: uppercase;
-  color: #899bbd;
+  color: #dd5353;
   font-weight: 600;
   margin: 10px 0 5px 15px;
 }
@@ -684,9 +684,9 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #4154f1;
+  color: #890A0A;
   transition: 0.3;
-  background: #f6f9ff;
+  background: #faf1f1;
   padding: 10px 15px;
   border-radius: 4px;
 }
@@ -694,25 +694,25 @@ h6 {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #012970;
+  color: #890A0A;
   background: #fff;
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: #899bbd;
+  color: #b88d8d;
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: #890A0A;
+  background: #faf1f1;
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
@@ -735,7 +735,7 @@ h6 {
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: #012970;
+  color: #890A0A;
   transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
@@ -750,11 +750,11 @@ h6 {
 
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .sidebar-nav .nav-content a.active i {
-  background-color: #4154f1;
+  background-color: #890A0A;
 }
 
 /*--------------------------------------------------------------
@@ -777,7 +777,7 @@ h6 {
 
 .dashboard .filter .icon:hover,
 .dashboard .filter .icon:focus {
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .dashboard .filter .dropdown-header {
@@ -821,7 +821,7 @@ h6 {
 }
 
 .dashboard .sales-card .card-icon {
-  color: #4154f1;
+  color: #890A0A;
   background: #f6f6fe;
 }
 
@@ -906,7 +906,7 @@ h6 {
 }
 
 .dashboard .news h4 a:hover {
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .dashboard .news p {
@@ -1054,7 +1054,7 @@ h6 {
 .faq .basic h6 {
   font-size: 18px;
   font-weight: 600;
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .faq .basic p {
@@ -1071,7 +1071,7 @@ h6 {
 .contact .info-box i {
   font-size: 38px;
   line-height: 0;
-  color: #4154f1;
+  color: #890A0A;
 }
 
 .contact .info-box h3 {
@@ -1138,7 +1138,7 @@ h6 {
 
 .contact .php-email-form input:focus,
 .contact .php-email-form textarea:focus {
-  border-color: #4154f1;
+  border-color: #890A0A;
 }
 
 .contact .php-email-form input {
@@ -1150,7 +1150,7 @@ h6 {
 }
 
 .contact .php-email-form button[type=submit] {
-  background: #4154f1;
+  background: #890A0A;
   border: 0;
   padding: 10px 30px;
   color: #fff;
@@ -1182,7 +1182,7 @@ h6 {
 .error-404 h1 {
   font-size: 180px;
   font-weight: 700;
-  color: #4154f1;
+  color: #890A0A;
   margin-bottom: 0;
   line-height: 150px;
 }

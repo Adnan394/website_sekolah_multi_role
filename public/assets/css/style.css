@@ -1,0 +1,35 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.btn-main {
+    background-color: #890A0A !important;
+    color : white !important;
+}
+
+.btn-main:hover {
+    background-color: #b00a0a !important;
+    color : white !important;
+}
+
+
+.color-main {
+    color: #890A0A !important;
+}
+
+.bg-main {
+    background-color: #890A0A !important;
+}
+
+.fw-600 {
+    font-weight: 600 !important;
+}
+
+.fw-700 {
+    font-weight: 700 !important;
+}
