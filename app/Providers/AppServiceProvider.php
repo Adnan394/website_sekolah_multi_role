@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register role alias middleware so controllers can use middleware('role:...')
+        $this->app['router']->aliasMiddleware('role', \App\Http\Middleware\CheckRole::class);
     }
 }

@@ -35,6 +35,14 @@
           <label class="form-label mb-1 small fw-semibold">Tanggal</label>
           <input type="date" name="tanggal" class="form-control form-control-sm" value="{{ $tanggal }}">
         </div>
+        <div>
+          <label class="form-label mb-1 small fw-semibold">Jam Ke</label>
+          <select name="jam_ke" class="form-select form-select-sm">
+            @for($j=1;$j<=12;$j++)
+              <option value="{{ $j }}" {{ (isset($jam_ke) && $jam_ke==$j)?'selected':'' }}>Jam {{ $j }}</option>
+            @endfor
+          </select>
+        </div>
         <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Filter</button>
       </form>
 
@@ -43,6 +51,7 @@
         @csrf
         <input type="hidden" name="kelas_id" value="{{ $kelas->id }}">
         <input type="hidden" name="tanggal" value="{{ $tanggal }}">
+        <input type="hidden" name="jam_ke" value="{{ $jam_ke }}">
 
         <div class="table-responsive">
           <table class="table table-hover table-bordered align-middle">
@@ -53,7 +62,7 @@
                 <th>Nomor Absen</th>
                 <th>Status</th>
                 <th>Keterangan</th>
-                <th>Flag</th>
+                <th>Oleh</th>
               </tr>
             </thead>
             <tbody>
@@ -77,9 +86,12 @@
                   <input type="text" name="absensi[{{ $i }}][keterangan]" class="form-control form-control-sm" value="{{ $a->keterangan ?? '' }}">
                 </td>
                 <td>
-                  <span class="badge {{ ($a && $a->status!='Belum Absen')?'bg-success':'bg-warning text-dark' }}">
-                    {{ ($a && $a->status!='Belum Absen')?'Sudah Absen':'Belum Absen' }}
-                  </span>
+                  @if($a && $a->created_by)
+                    @php $by = \App\Models\User::find($a->created_by); @endphp
+                    <small class="text-muted">{{ $by?->username ?? '—' }}</small>
+                  @else
+                    <small class="text-muted">—</small>
+                  @endif
                 </td>
               </tr>
               @endforeach

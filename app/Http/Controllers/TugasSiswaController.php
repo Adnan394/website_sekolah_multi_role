@@ -14,6 +14,24 @@ use Illuminate\Support\Facades\Storage;
 
 class TugasSiswaController extends Controller
 {
+    public function __construct()
+    {
+        // Guru/Admin access for grading and listing submissions
+        $this->middleware(function ($request, $next) {
+            $role = $request->user()->role ?? null;
+            if (!in_array($role, ['Admin', 'guru'])) {
+                abort(403);
+            }
+            return $next($request);
+        })->only(['indexGuru', 'edit', 'update', 'showSubmissions']);
+
+        // Only siswa can upload / view their tasks
+        $this->middleware(function ($request, $next) {
+            $role = $request->user()->role ?? null;
+            if ($role !== 'siswa') abort(403);
+            return $next($request);
+        })->only(['indexSiswa', 'create', 'store']);
+    }
     // Daftar tugas untuk siswa
     // public function index()
     // {
@@ -131,5 +149,16 @@ class TugasSiswaController extends Controller
         $active = 'tugas_siswa';
 
         return view('admin.guru.tugas.index', compact('tugas', 'active'));
+    }
+
+    // Tampilkan daftar submission untuk sebuah jadwal tugas
+    public function showSubmissions(\App\Models\JadwalTugas $jadwal)
+    {
+        $submissions = TugasSiswa::where('jadwal_tugas_id', $jadwal->id)
+                        ->with('siswa')
+                        ->orderBy('created_at')
+                        ->get();
+        $active = 'tugas_siswa';
+        return view('admin.guru.tugas.submissions', compact('jadwal', 'submissions', 'active'));
     }
 }

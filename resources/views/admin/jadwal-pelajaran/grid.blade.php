@@ -17,6 +17,7 @@
       <div class="card-body pt-4">
         {{-- Filter Grid --}}
         <form method="GET" action="{{ route('jadwal-pelajaran.grid') }}" class="row g-3 mb-4">
+          @if(empty($isStudent))
           <div class="col-md-4">
             <label class="form-label fw-bold small">Pilih Kelas</label>
             <select name="kelas_id" class="form-select" onchange="this.form.submit()">
@@ -26,6 +27,12 @@
               @endforeach
             </select>
           </div>
+          @else
+          <div class="col-md-4">
+            <label class="form-label fw-bold small">Kelas</label>
+            <input type="text" readonly class="form-control" value="{{ $kelas?->nama_kelas ?? '-' }}">
+          </div>
+          @endif
           <div class="col-md-3">
             <label class="form-label fw-bold small">Tahun Pelajaran</label>
             <select name="tahun_pelajaran" class="form-select" onchange="this.form.submit()">
@@ -74,9 +81,11 @@
                             <div class="fw-bold small text-primary">{{ $item->pelajaran->nama_pelajaran }}</div>
                             <div class="small text-muted" style="font-size: 0.7rem;">{{ $item->guru->nama_lengkap }}</div>
                             <div class="badge bg-secondary" style="font-size: 0.6rem;">{{ $item->ruangan ?? '-' }}</div>
+                            @if(empty($isStudent))
                             <div class="mt-1">
                                 <a href="{{ route('jadwal-pelajaran.edit', $item->id) }}" class="text-warning"><i class="bi bi-pencil-square"></i></a>
                             </div>
+                            @endif
                           </div>
                         </div>
                       @else

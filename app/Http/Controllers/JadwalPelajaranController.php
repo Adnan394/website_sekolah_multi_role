@@ -6,11 +6,43 @@ use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use App\Models\Pelajaran;
 use App\Models\Guru;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class JadwalPelajaranController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:Admin,guru,siswa')->only(['create', 'store', 'edit', 'update', 'destroy', 'grid', 'gridSiswa']);
+    }
+
+    public function gridSiswa(Request $request)
+    {
+        $siswa = Siswa::where('user_id', Auth::id())->with('kelas')->first();
+        $kelas = $siswa?->kelas->first();
+
+        $tahun = $request->tahun_pelajaran ?? $kelas?->tahun_pelajaran ?? Kelas::max('tahun_pelajaran');
+        $semester = $request->semester ?? $kelas?->semester ?? 'Ganjil';
+
+        $jadwal = JadwalPelajaran::with(['pelajaran', 'guru'])
+            ->when($kelas?->id, fn($q) => $q->where('kelas_id', $kelas->id))
+            ->where('tahun_pelajaran', $tahun)
+            ->where('semester', $semester)
+            ->get()
+            ->groupBy('hari');
+
+        $kelasList = Kelas::aktif()->orderBy('tingkat')->orderBy('nama_kelas')->get();
+        $tahunList = Kelas::select('tahun_pelajaran')->distinct()->orderByDesc('tahun_pelajaran')->pluck('tahun_pelajaran');
+        $hariList  = JadwalPelajaran::listHari();
+
+        $active = 'siswa_jadwal';
+        $isStudent = true;
+        return view('admin.jadwal-pelajaran.grid', compact(
+            'jadwal', 'kelas', 'kelasList', 'tahunList', 'hariList', 'tahun', 'semester', 'active', 'isStudent'
+        ));
+    }
     public function index(Request $request)
     {
         $query = JadwalPelajaran::with(['kelas', 'pelajaran', 'guru']);

@@ -16,8 +16,10 @@ class Absensi extends Model
         'kelas_id',
         'siswa_id',
         'tanggal',
+        'jam_ke',
         'status',       // Hadir, Sakit, Izin, Alfa, Belum Absen
         'keterangan',
+        'created_by',
     ];
 
     protected $casts = [

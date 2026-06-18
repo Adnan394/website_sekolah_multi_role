@@ -20,12 +20,14 @@
       @endif
 
       <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        @if(Auth::user()->role !== 'siswa')
         <a href="{{ route('materi-pembelajaran.create') }}" class="btn btn-danger">
           <i class="bi bi-plus-circle me-1"></i>Tambah Materi
         </a>
         <a href="{{ route('jadwal-tugas.index') }}" class="btn btn-outline-primary">
           <i class="bi bi-clipboard-check me-1"></i>Jadwal Tugas
         </a>
+        @endif
       </div>
 
       {{-- Filter --}}
@@ -107,6 +109,7 @@
                 <td>
                   <div class="d-flex gap-1">
                     <a href="{{ route('materi-pembelajaran.show', $item) }}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
+                    @if(Auth::user()->role !== 'siswa')
                     <a href="{{ route('materi-pembelajaran.edit', $item) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
                     <form action="{{ route('materi-pembelajaran.toggle-publish', $item) }}" method="POST">
                       @csrf @method('PATCH')
@@ -120,6 +123,7 @@
                       @csrf @method('DELETE')
                       <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
                     </form>
+                    @endif
                   </div>
                 </td>
               </tr>

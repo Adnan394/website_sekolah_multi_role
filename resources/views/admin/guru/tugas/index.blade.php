@@ -40,10 +40,10 @@
                                     {{ $t->status_label }}
                                 </span>
                             </td>
-                            <td>{{ $sub->nilai ?? '-' }}</td>
-                            <td>{{ $sub->komentar ?? '-' }}</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>
-                                <a href="{{ route('siswa-tugas.edit', $t->id) }}" class="btn btn-sm btn-primary">Lihat / Nilai</a>
+                                <a href="{{ route('guru.tugas.submissions', $t->id) }}" class="btn btn-sm btn-primary">Lihat / Nilai</a>
                             </td>
                         </tr>
                         @endforeach

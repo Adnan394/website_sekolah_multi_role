@@ -6,11 +6,18 @@ use App\Models\MateriPembelajaran;
 use App\Models\Kelas;
 use App\Models\Pelajaran;
 use App\Models\Guru;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class MateriPembelajaranController extends Controller
 {
+    public function __construct()
+    {
+        // Only Admin and Guru can create/update/delete or toggle publish
+        $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'togglePublish']);
+    }
     public function index(Request $request)
     {
         $query = MateriPembelajaran::with(['kelas', 'pelajaran', 'guru']);
@@ -21,6 +28,12 @@ class MateriPembelajaranController extends Controller
         if ($request->filled('is_published')) $query->where('is_published', $request->is_published);
         if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        if (Auth::user()->role === 'siswa') {
+            $siswa = Siswa::where('user_id', Auth::id())->with('kelas')->first();
+            $kelasIds = $siswa?->kelas->pluck('id')->toArray() ?? [0];
+            $query->published()->whereIn('kelas_id', $kelasIds);
         }
 
         $materi       = $query->orderByDesc('tanggal_upload')->paginate(15)->withQueryString();

@@ -104,8 +104,9 @@ class Guru extends Model
     /** URL foto atau placeholder */
     public function getFotoUrlAttribute(): string
     {
-        if ($this->foto && file_exists(public_path('storage/' . $this->foto))) {
-            return asset('storage/' . $this->foto);
+        // Prefer storage/app/public (protected) and serve via internal route if symlink missing
+        if ($this->foto && file_exists(storage_path('app/public/' . $this->foto))) {
+            return asset('storage/files/' . $this->foto);
         }
         $inisial = urlencode(substr($this->nama_lengkap, 0, 2));
         return "https://ui-avatars.com/api/?name={$inisial}&background=8B0000&color=fff&size=200";

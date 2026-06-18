@@ -247,50 +247,51 @@
           <a class="nav-link {{ $active == 'absensi' ? '' : 'collapsed' }}" href="{{ route('absensi.index') }}"><i class="bi bi-check2-square"></i><span>Setting Absensi</span></a>
         </li>
 
-        
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'rapor' ? '' : 'collapsed' }}" href="{{ route('rapor.index') }}"><i class="bi bi-bar-chart"></i><span>Setting Penilaian</span></a>
+        </li>
         @endif
         
         @if (Auth::user()->role == 'siswa')
+        <li class="nav-heading">Menu Siswa</li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'siswa_jadwal' ? '' : 'collapsed' }}" href="{{ route('siswa.jadwal-pelajaran') }}"><i class="bi bi-calendar"></i><span>Jadwal Pelajaran</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'materi_pelajaran' ? '' : 'collapsed' }}" href="{{ route('materi-pembelajaran.index') }}"><i class="bi bi-book"></i><span>Materi Pelajaran</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'siswa_rapor' ? '' : 'collapsed' }}" href="{{ route('siswa.rapor.index') }}"><i class="bi bi-journal-text"></i><span>Lihat Rapor</span></a>
+        </li>
           <li class="nav-item">
             <a class="nav-link {{ $active == 'tugas_siswa' ? '' : 'collapsed' }}" href="{{ route('siswa-tugas.index') }}"><i class="bi bi-bar-chart"></i><span>Tugas</span></a>
           </li>
         @endif
-
-
-        <!-- ================= SETTING SISWA ================= -->
-        {{-- <li class="nav-heading">Setting Siswa</li>
-
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#"><i class="bi bi-person"></i><span>Setting Profil</span></a>
-        </li>
-
+        
+        @if (Auth::user()->role == 'guru')
         <!-- Materi Pembelajaran -->
         <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#siswa-materi" data-bs-toggle="collapse" href="#">
+          <a class="nav-link {{ $active == 'materi_pelajaran' ? '' : 'collapsed' }}" data-bs-target="#guru-materi" data-bs-toggle="collapse" href="#">
             <i class="bi bi-journal"></i><span>Setting Materi Pembelajaran</span>
             <i class="bi bi-chevron-down ms-auto"></i>
           </a>
 
-          <ul id="siswa-materi" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-            <li><a href="#"><i class="bi bi-circle"></i><span>Setting Materi Pembelajaran</span></a></li>
-            <li><a href="#"><i class="bi bi-circle"></i><span>Setting Jadwal Tugas</span></a></li>
+          <ul id="guru-materi" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li><a href="{{ route('materi-pembelajaran.index') }}"><i class="bi bi-circle"></i><span>Setting Materi Pembelajaran</span></a></li>
+            <li><a href="{{ route('jadwal-tugas.index') }}"><i class="bi bi-circle"></i><span>Setting Jadwal Tugas</span></a></li>
           </ul>
         </li>
+          <li class="nav-item">
+            <a class="nav-link {{ $active == 'absensi' ? '' : 'collapsed' }}" href="{{ route('absensi.index') }}"><i class="bi bi-check2-square"></i><span>Setting Absensi</span></a>
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#"><i class="bi bi-calendar"></i><span>Setting Jadwal Pelajaran</span></a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link {{ $active == 'rapor' ? '' : 'collapsed' }}" href="{{ route('rapor.index') }}"><i class="bi bi-bar-chart"></i><span>Setting Penilaian</span></a>
+          </li>
+        @endif
 
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#"><i class="bi bi-check2-square"></i><span>Setting Absensi</span></a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="#"><i class="bi bi-bar-chart"></i><span>Setting Penilaian</span></a>
-        </li>
-
-      </ul> --}}
-        {{-- <li class="nav-heading">Setting Data User</li> --}}
+        <!-- ================= SETTING SISWA ================= -->
+         
 
 
         <li class="nav-item">
