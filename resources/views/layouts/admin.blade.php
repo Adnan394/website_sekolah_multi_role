@@ -27,6 +27,8 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('NiceAdmin/assets/css/style.css') }}" rel="stylesheet" />
+    <!-- Admin Modern Override -->
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-modern.css') }}" />
     <link rel="stylesheet" href="sweetalert2.min.css">
 
     <!-- =======================================================
@@ -111,7 +113,7 @@
       <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-heading">Menu Admin</li>
         <li class="nav-item">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="/admin/dashboard">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span>
           </a>
