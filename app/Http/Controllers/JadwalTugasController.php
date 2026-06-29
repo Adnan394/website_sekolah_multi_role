@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Storage;
 
 class JadwalTugasController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'togglePublish']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'togglePublish']);
+    // }
     public function index(Request $request)
     {
         $query = JadwalTugas::with(['kelas', 'pelajaran', 'guru']);

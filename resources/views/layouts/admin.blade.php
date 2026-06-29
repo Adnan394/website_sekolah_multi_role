@@ -185,13 +185,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {{ $active == 'kelas' ? '' : 'collapsed' }}" href="{{ route('kelas.index') }}">
-            <i class="bi bi-file"></i>
+            <i class="bi bi-house-add"></i>
             <span>Kelas</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ $active == 'pelajaran' ? '' : 'collapsed' }}" href="{{ route('pelajaran.index') }}">
-            <i class="bi bi-file"></i>
+            <i class="bi bi-journal-text"></i>
             <span>Pelajaran</span>
           </a>
         </li>
@@ -206,7 +206,7 @@
               data-bs-target="#guru-siswa" 
               data-bs-toggle="collapse" 
               href="#">
-            <i class="bi bi-journal"></i><span>Data Guru dan Siswa</span>
+            <i class="bi bi-person-lines-fill"></i><span>Data Guru dan Siswa</span>
             <i class="bi bi-chevron-down ms-auto"></i>
           </a>
 

@@ -19,17 +19,35 @@ class RaporPenilaianController extends Controller
 {
     public function index(Request $request)
     {
-        $query = RaporPenilaian::with('siswa');
-        if ($request->filled('siswa_id')) $query->where('siswa_id', $request->siswa_id);
+        $query = RaporPenilaian::with(['siswa.kelas']);
+        
+        if ($request->filled('kelas_id')) {
+            $query->whereHas('siswa.kelas', function ($q) use ($request) {
+                $q->where('kelas.id', $request->kelas_id);
+            });
+        }
+        
+        if ($request->filled('semester')) {
+            $query->where('semester', $request->semester);
+        }
+
+        if ($request->filled('siswa_id')) {
+            $query->where('siswa_id', $request->siswa_id);
+        }
+
         $rapor = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
+        
+        $kelasList = Kelas::orderBy('tingkat')->orderBy('nama_kelas')->get();
+        $semesterList = Kelas::listSemester();
+        
         $active = 'rapor';
-        return view('admin.rapor.index', compact('rapor', 'active'));
+        return view('admin.rapor.index', compact('rapor', 'active', 'kelasList', 'semesterList'));
     }
 
-    public function __construct()
-    {
-        $this->middleware('role:Admin,guru')->only(['create','store','storeItem','downloadPdf','destroy']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('role:Admin,guru')->only(['create','store','storeItem','downloadPdf','destroy']);
+    // }
 
 
     public function create(Request $request)

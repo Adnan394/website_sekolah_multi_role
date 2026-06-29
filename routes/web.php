@@ -23,9 +23,38 @@ use App\Http\Controllers\TugasSiswaController;
 use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware('auth')->group(function () { 
+    // Serve storage files via controller when public/storage symlink is not present
+    Route::get('storage/files/{path}', [StorageController::class, 'show'])->where('path', '.*');
+
+    // Siswa
+    Route::get('siswa/tugas', [TugasSiswaController::class,'indexSiswa'])->name('siswa-tugas.index');
+    Route::get('siswa/tugas/{jadwal}/create', [TugasSiswaController::class,'create'])->name('siswa-tugas.create');
+    Route::post('siswa/tugas/{jadwal}', [TugasSiswaController::class,'store'])->name('siswa-tugas.store');
+
+    Route::middleware('role:siswa')->group(function () {
+        Route::get('admin/siswa/jadwal-pelajaran', [JadwalPelajaranController::class, 'gridSiswa'])->name('siswa.jadwal-pelajaran');
+        Route::get('admin/siswa/materi-pembelajaran', [MateriPembelajaranController::class, 'indexSiswa'])->name('siswa.materi-pembelajaran.index');
+        Route::get('admin/siswa/rapor', [\App\Http\Controllers\RaporPenilaianController::class, 'indexSiswa'])->name('siswa.rapor.index');
+        Route::get('admin/siswa/rapor/{rapor}', [\App\Http\Controllers\RaporPenilaianController::class, 'showSiswa'])->name('siswa.rapor.show');
+        Route::get('admin/siswa/rapor/{rapor}/download', [\App\Http\Controllers\RaporPenilaianController::class, 'downloadPdfSiswa'])->name('siswa.rapor.download');
+    });
+
+    // Guru
+    Route::get('guru/tugas', [TugasSiswaController::class,'indexGuru'])->name('guru.tugas.index');
+    Route::get('guru/tugas/{jadwal}/submissions', [TugasSiswaController::class, 'showSubmissions'])->name('guru.tugas.submissions');
+    Route::get('guru/tugas/{submission}/edit', [TugasSiswaController::class,'edit'])->name('siswa-tugas.edit');
+    Route::put('guru/tugas/{submission}', [TugasSiswaController::class,'update'])->name('siswa-tugas.update');
+});
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard', ['active' => 'dashboard']);
+        return view('dashboard', [
+            'active' => 'dashboard',
+            'guruCount' => \App\Models\Guru::count(),
+            'siswaCount' => \App\Models\Siswa::count(),
+            'kelasCount' => \App\Models\Kelas::count(),
+            'pelajaranCount' => \App\Models\Pelajaran::count(),
+        ]);
     });
     Route::resource('tentang_kami', TentangKamiController::class);
     Route::resource('struktur', StrukturOrganisasiController::class);
@@ -92,30 +121,6 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('rapor/{rapor}/items', [\App\Http\Controllers\RaporPenilaianController::class, 'storeItem'])->name('rapor.items.store');
     
 });
-Route::middleware('auth')->group(function () { 
-    // Serve storage files via controller when public/storage symlink is not present
-    Route::get('storage/files/{path}', [StorageController::class, 'show'])->where('path', '.*');
-
-    // Siswa
-    Route::get('siswa/tugas', [TugasSiswaController::class,'indexSiswa'])->name('siswa-tugas.index');
-    Route::get('siswa/tugas/{jadwal}/create', [TugasSiswaController::class,'create'])->name('siswa-tugas.create');
-    Route::post('siswa/tugas/{jadwal}', [TugasSiswaController::class,'store'])->name('siswa-tugas.store');
-
-    Route::middleware('role:siswa')->group(function () {
-        Route::get('admin/siswa/jadwal-pelajaran', [JadwalPelajaranController::class, 'gridSiswa'])->name('siswa.jadwal-pelajaran');
-        Route::get('admin/siswa/materi-pembelajaran', [MateriPembelajaranController::class, 'indexSiswa'])->name('siswa.materi-pembelajaran.index');
-        Route::get('admin/siswa/rapor', [\App\Http\Controllers\RaporPenilaianController::class, 'indexSiswa'])->name('siswa.rapor.index');
-        Route::get('admin/siswa/rapor/{rapor}', [\App\Http\Controllers\RaporPenilaianController::class, 'showSiswa'])->name('siswa.rapor.show');
-        Route::get('admin/siswa/rapor/{rapor}/download', [\App\Http\Controllers\RaporPenilaianController::class, 'downloadPdfSiswa'])->name('siswa.rapor.download');
-    });
-
-    // Guru
-    Route::get('guru/tugas', [TugasSiswaController::class,'indexGuru'])->name('guru.tugas.index');
-    Route::get('guru/tugas/{jadwal}/submissions', [TugasSiswaController::class, 'showSubmissions'])->name('guru.tugas.submissions');
-    Route::get('guru/tugas/{submission}/edit', [TugasSiswaController::class,'edit'])->name('siswa-tugas.edit');
-    Route::put('guru/tugas/{submission}', [TugasSiswaController::class,'update'])->name('siswa-tugas.update');
-});
-
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

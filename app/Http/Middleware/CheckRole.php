@@ -12,15 +12,15 @@ class CheckRole
         if (! $request->user()) {
             abort(403);
         }
-        $allowed = array_map('trim', explode(',', $roles));
-        $role = $request->user()->role ?? null;
+        $allowed = array_map('strtolower', array_map('trim', explode(',', $roles)));
+        $role = strtolower($request->user()->role ?? '');
         // Allow if explicit role matches
         if ($role && in_array($role, $allowed)) {
             return $next($request);
         }
 
-        // Special case: if 'Guru' is allowed and the user has a related guru model, allow
-        if (in_array('Guru', $allowed) && method_exists($request->user(), 'guru') && $request->user()->guru) {
+        // Special case: if 'guru' is allowed and the user has a related guru model, allow
+        if (in_array('guru', $allowed) && method_exists($request->user(), 'guru') && $request->user()->guru) {
             return $next($request);
         }
 

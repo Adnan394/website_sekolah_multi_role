@@ -16,7 +16,7 @@
     <div class="card">
       <div class="card-body pt-4">
         {{-- Filter Grid --}}
-        <form method="GET" action="{{ route('jadwal-pelajaran.grid') }}" class="row g-3 mb-4">
+        <form method="GET" action="{{ !empty($isStudent) ? route('siswa.jadwal-pelajaran') : route('jadwal-pelajaran.grid') }}" class="row g-3 mb-4">
           @if(empty($isStudent))
           <div class="col-md-4">
             <label class="form-label fw-bold small">Pilih Kelas</label>

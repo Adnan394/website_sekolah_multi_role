@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Storage;
 
 class MateriPembelajaranController extends Controller
 {
-    public function __construct()
-    {
-        // Only Admin and Guru can create/update/delete or toggle publish
-        $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'togglePublish']);
-    }
+    // public function __construct()
+    // {
+    //     // Only Admin and Guru can create/update/delete or toggle publish
+    //     $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'togglePublish']);
+    // }
     public function index(Request $request)
     {
         $query = MateriPembelajaran::with(['kelas', 'pelajaran', 'guru']);
@@ -82,8 +82,21 @@ class MateriPembelajaranController extends Controller
 
     public function show(MateriPembelajaran $materiPembelajaran)
     {
+        if (Auth::user()->role === 'siswa') {
+            $siswa = Siswa::where('user_id', Auth::id())->with('kelas')->first();
+            $kelasIds = $siswa?->kelas->pluck('id')->toArray() ?? [0];
+            if (!$materiPembelajaran->is_published || !in_array($materiPembelajaran->kelas_id, $kelasIds)) {
+                abort(404);
+            }
+        }
+
         $materiPembelajaran->load(['kelas', 'pelajaran', 'guru']);
         return view('admin.materi-pembelajaran.show', ['materi' => $materiPembelajaran, 'active' => 'materi_pelajaran']);
+    }
+
+    public function indexSiswa(Request $request)
+    {
+        return $this->index($request);
     }
 
     public function edit(MateriPembelajaran $materiPembelajaran)

@@ -13,10 +13,11 @@ use Illuminate\Validation\Rule;
 
 class JadwalPelajaranController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('role:Admin,guru,siswa')->only(['create', 'store', 'edit', 'update', 'destroy', 'grid', 'gridSiswa']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('role:Admin,guru')->only(['create', 'store', 'edit', 'update', 'destroy', 'grid']);
+    //     $this->middleware('role:Admin,guru,siswa')->only(['gridSiswa']);
+    // }
 
     public function gridSiswa(Request $request)
     {
