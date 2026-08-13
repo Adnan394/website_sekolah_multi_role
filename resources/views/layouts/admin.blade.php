@@ -85,7 +85,7 @@
               </li>
 
               <li>
-                <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.index') }}">
                   <i class="bi bi-person"></i>
                   <span>My Profile</span>
                 </a>
@@ -111,16 +111,16 @@
 <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
       <ul class="sidebar-nav" id="sidebar-nav">
+        @if(Auth::user()->role == 'Admin')
         <li class="nav-heading">Menu Admin</li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/dashboard">
+          <a class="nav-link {{ (isset($active) && $active == 'dashboard_admin') ? '' : 'collapsed' }}" href="/admin/dashboard">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <!-- End Dashboard Nav -->
 
-        @if(Auth::user()->role == 'Admin')
         <li class="nav-heading">Setting Umum</li>
         <li class="nav-item">
           <!-- Menu Level 1 -->
@@ -257,6 +257,12 @@
         @if (Auth::user()->role == 'siswa')
         <li class="nav-heading">Menu Siswa</li>
         <li class="nav-item">
+          <a class="nav-link {{ (isset($active) && $active == 'dashboard_siswa') ? '' : 'collapsed' }}" href="/admin/dashboard">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {{ $active == 'siswa_jadwal' ? '' : 'collapsed' }}" href="{{ route('siswa.jadwal-pelajaran') }}"><i class="bi bi-calendar"></i><span>Jadwal Pelajaran</span></a>
         </li>
         <li class="nav-item">
@@ -271,6 +277,14 @@
         @endif
         
         @if (Auth::user()->role == 'guru')
+        <li class="nav-heading">Menu Guru</li>
+        <li class="nav-item">
+          <a class="nav-link {{ (isset($active) && $active == 'dashboard_guru') ? '' : 'collapsed' }}" href="/admin/dashboard">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+
         <!-- Materi Pembelajaran -->
         <li class="nav-item">
           <a class="nav-link {{ $active == 'materi_pelajaran' ? '' : 'collapsed' }}" data-bs-target="#guru-materi" data-bs-toggle="collapse" href="#">
@@ -291,17 +305,50 @@
             <a class="nav-link {{ $active == 'rapor' ? '' : 'collapsed' }}" href="{{ route('rapor.index') }}"><i class="bi bi-bar-chart"></i><span>Setting Penilaian</span></a>
           </li>
         @endif
+        
+        @if (Auth::user()->role == 'Admin')
+        <li class="nav-heading">Setting Menu Perpustakaan</li>
+        <li class="nav-item">
+          <a class="nav-link {{ isset($active) && $active == 'admin_perpus' ? '' : 'collapsed' }}" href="{{ route('admin-perpus.index') }}"><i class="bi bi-person-badge"></i><span>Kelola Admin Perpus</span></a>
+        </li>
+        @endif
+        
+        @if (Auth::user()->role == 'Admin Perpustakaan' || Auth::user()->role == 'Admin')
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'dashboard' ? '' : 'collapsed' }}" href="{{ route('perpustakaan.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'buku' ? '' : 'collapsed' }}" href="{{ route('perpustakaan.buku.index') }}"><i class="bi bi-book"></i><span>Data Buku</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ $active == 'peminjaman' ? '' : 'collapsed' }}" href="{{ route('perpustakaan.peminjaman.index') }}"><i class="bi bi-journal-text"></i><span>Data Peminjam</span></a>
+        </li>
+        @endif
 
         <!-- ================= SETTING SISWA ================= -->
          
 
 
+        <li class="nav-heading">Pengaturan Akun</li>
         <li class="nav-item">
-          <a class="nav-link collapsed" href="{{ route('logout') }}">
-            <i class="bi bi-box-arrow-in-left"></i>
-            <span>Logout</span>
+          <a class="nav-link {{ isset($active) && $active == 'pengaturan' ? '' : 'collapsed' }}" data-bs-target="#pengaturan-akun" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-gear"></i><span>Pengaturan</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
           </a>
+          <ul id="pengaturan-akun" class="nav-content collapse {{ isset($active) && $active == 'pengaturan' ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+            <li>
+              <a href="{{ route('password.edit') }}" class="{{ request()->routeIs('password.edit') ? 'active' : '' }}">
+                <i class="bi bi-circle"></i><span>Ubah Password</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('logout') }}">
+                <i class="bi bi-circle"></i><span>Logout</span>
+              </a>
+            </li>
+          </ul>
         </li>
+        <!-- End Pengaturan Menu -->
         <!-- End Login Page Nav -->
       </ul>
     </aside>

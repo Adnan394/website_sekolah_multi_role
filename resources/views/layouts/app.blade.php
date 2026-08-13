@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
+    <!-- Favicons -->
+    <link href="{{ asset('assets/img/logo.png') }}" rel="icon" />
     <style>
     /* ── Modern Navbar ── */
     .navbar-modern {
@@ -310,19 +312,19 @@
                             <i class="bi bi-building me-1"></i>Profil
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle me-2"></i>Tentang Kami</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-diagram-3 me-2"></i>Struktur Organisasi</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-building me-2"></i>Fasilitas Sekolah</a></li>
+                            <li><a class="dropdown-item" href="#profil"><i class="bi bi-info-circle me-2"></i>Tentang Kami</a></li>
+                            <li><a class="dropdown-item" href="#struktur"><i class="bi bi-diagram-3 me-2"></i>Struktur Organisasi</a></li>
+                            <li><a class="dropdown-item" href="#fasilitas"><i class="bi bi-building me-2"></i>Fasilitas Sekolah</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-trophy me-1"></i>Prestasi</a>
+                        <a class="nav-link" href="#prestasi"><i class="bi bi-trophy me-1"></i>Prestasi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-newspaper me-1"></i>Berita</a>
+                        <a class="nav-link" href="#berita"><i class="bi bi-newspaper me-1"></i>Berita</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-people me-1"></i>Tentang Kami</a>
+                        <a class="nav-link" href="#profil"><i class="bi bi-people me-1"></i>Tentang Kami</a>
                     </li>
                     <li class="nav-item ms-lg-3">
                         <a class="nav-link btn-login-modern text-light" href="/login"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>

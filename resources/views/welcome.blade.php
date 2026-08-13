@@ -551,7 +551,7 @@
     margin-bottom: 8px;
 }
 .prestasi-desc {
-    color: rgba(255,255,255,0.55);
+    color: rgba(255, 255, 255, 0.82) !important;
     font-size: 0.88rem;
     line-height: 1.6;
 }
@@ -929,7 +929,7 @@
                             {{ $item->created_at->format('d M Y') }}
                         </span>
                         <h4 class="prestasi-title">{{ $item->title }}</h4>
-                        <p class="prestasi-desc">{!! Str::limit($item->description, 120) !!}</p>
+                        <p class="prestasi-desc" style="color: rgba(255, 255, 255, 0.82) !important;">{!! Str::limit($item->description, 120) !!}</p>
                     </div>
                 </div>
             </div>
@@ -987,32 +987,34 @@
         </div>
 
         <div class="berita-grid" id="beritaGrid">
-            @php
-                $dummyBerita = [
-                    ['title' => 'Pengumuman', 'desc' => 'Informasi penting mengenai kegiatan akademik dan jadwal terbaru dari sekolah.', 'category' => 'Pengumuman', 'date' => '15 Jun 2025'],
-                    ['title' => 'Kegiatan Sekolah', 'desc' => 'Dokumentasi dan laporan kegiatan belajar mengajar serta ekstrakurikuler.', 'category' => 'Kegiatan', 'date' => '12 Jun 2025'],
-                    ['title' => 'Informasi', 'desc' => 'Berbagai informasi umum seputar pendaftaran dan program sekolah terbaru.', 'category' => 'Info', 'date' => '10 Jun 2025'],
-                ];
-            @endphp
-            @foreach($dummyBerita as $berita)
-            <div class="berita-card" data-title="{{ strtolower($berita['title']) }}" data-desc="{{ strtolower($berita['desc']) }}">
+            @forelse($berita as $item)
+            <div class="berita-card" data-title="{{ strtolower($item->judul) }}" data-desc="{{ strtolower(strip_tags($item->konten)) }}">
                 <div class="berita-card-img">
-                    <img src="{{ asset('img/dummy.png') }}" alt="{{ $berita['title'] }}">
-                    <span class="berita-category">{{ $berita['category'] }}</span>
+                    @if($item->thumbnail)
+                        <img src="{{ asset('uploads/berita/'.$item->thumbnail) }}" alt="{{ $item->judul }}">
+                    @else
+                        <img src="{{ asset('img/dummy.png') }}" alt="{{ $item->judul }}">
+                    @endif
+                    <span class="berita-category">Berita</span>
                 </div>
                 <div class="berita-card-body">
-                    <h5 class="berita-card-title">{{ $berita['title'] }}</h5>
-                    <p class="berita-card-desc">{{ $berita['desc'] }}</p>
+                    <h5 class="berita-card-title">{{ $item->judul }}</h5>
+                    <p class="berita-card-desc">{{ Str::limit(strip_tags($item->konten), 100) }}</p>
                     <div class="berita-card-footer">
                         <span class="berita-card-date">
                             <i class="bi bi-calendar3"></i>
-                            {{ $berita['date'] }}
+                            {{ \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d M Y') }}
                         </span>
-                        <a href="#" class="berita-card-link">Baca <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('berita.show.public', $item->slug) }}" class="berita-card-link">Baca <i class="bi bi-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="text-center py-5" style="grid-column: 1 / -1;">
+                <i class="bi bi-newspaper" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="mt-3" style="color: #aaa;">Belum ada berita yang dipublikasikan.</p>
+            </div>
+            @endforelse
         </div>
 
         <div class="berita-no-result" id="beritaNoResult">

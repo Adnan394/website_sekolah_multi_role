@@ -78,4 +78,19 @@ class BeritaController extends Controller
         Berita::destroy($id);
         return back();
     }
+
+    /**
+     * Public berita detail page (no auth required).
+     */
+    public function showPublic($slug)
+    {
+        $berita = Berita::where('slug', $slug)->where('status', 'publish')->firstOrFail();
+        $beritaLainnya = Berita::where('status', 'publish')
+            ->where('id', '!=', $berita->id)
+            ->latest('tanggal_publish')
+            ->take(3)
+            ->get();
+
+        return view('berita.show', compact('berita', 'beritaLainnya'));
+    }
 }

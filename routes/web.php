@@ -45,17 +45,47 @@ Route::middleware('auth')->group(function () {
     Route::get('guru/tugas/{jadwal}/submissions', [TugasSiswaController::class, 'showSubmissions'])->name('guru.tugas.submissions');
     Route::get('guru/tugas/{submission}/edit', [TugasSiswaController::class,'edit'])->name('siswa-tugas.edit');
     Route::put('guru/tugas/{submission}', [TugasSiswaController::class,'update'])->name('siswa-tugas.update');
+
+    // Password
+    Route::get('password/change', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('password.edit');
+    Route::put('password/change', [\App\Http\Controllers\PasswordController::class, 'update'])->name('password.update');
 });
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
+        $role = Auth::user()->role;
+        
+        if ($role == 'guru') {
+            return view('guru.dashboard', [
+                'active' => 'dashboard_guru',
+                'materiCount' => \App\Models\MateriPembelajaran::count(),
+                'tugasCount' => \App\Models\JadwalTugas::count(),
+                'absensiCount' => \App\Models\Absensi::count(),
+                'raporCount' => \App\Models\RaporPenilaian::count(),
+            ]);
+        }
+
+        if ($role == 'siswa') {
+            return view('siswa.dashboard', [
+                'active' => 'dashboard_siswa',
+                'jadwalCount' => \App\Models\JadwalPelajaran::count(),
+                'materiCount' => \App\Models\MateriPembelajaran::count(),
+                'raporCount' => \App\Models\RaporPenilaian::count(),
+                'tugasCount' => \App\Models\TugasSiswa::count(),
+            ]);
+        }
+
         return view('dashboard', [
-            'active' => 'dashboard',
+            'active' => 'dashboard_admin',
             'guruCount' => \App\Models\Guru::count(),
             'siswaCount' => \App\Models\Siswa::count(),
             'kelasCount' => \App\Models\Kelas::count(),
             'pelajaranCount' => \App\Models\Pelajaran::count(),
         ]);
-    });
+    })->name('dashboard');
+    
+    // Profile
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+
     Route::resource('tentang_kami', TentangKamiController::class);
     Route::resource('struktur', StrukturOrganisasiController::class);
     Route::resource('fasilitas', FasilitasSekolahController::class);
@@ -86,9 +116,11 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('kelas-guru/{kelas}/mapel', [KelasGuruController::class, 'setGuruMapel'])->name('kelas-guru.set-guru-mapel');
     Route::delete('kelas-guru/{kelas}/mapel', [KelasGuruController::class, 'removeGuruMapel'])->name('kelas-guru.remove-guru-mapel');
 
-    // CRUD Siswa
-    Route::resource('siswa', SiswaController::class);
-    Route::post('siswa/{siswa}/toggle-status', [SiswaController::class, 'toggleStatus'])->name('siswa.toggle-status');
+    // Data Siswa
+    Route::resource('siswa', \App\Http\Controllers\SiswaController::class);
+    
+    // Kelola Admin Perpustakaan
+    Route::resource('admin-perpus', \App\Http\Controllers\AdminPerpusController::class);
 
     // Plotting Siswa ke Kelas (Mapping)
     Route::resource('kelas-siswa', KelasSiswaController::class);
@@ -123,7 +155,23 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/berita/{slug}', [BeritaController::class, 'showPublic'])->name('berita.show.public');
 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'login_store'])->name('login_store');
+
+// Routes untuk Admin Perpustakaan
+Route::get('login-perpustakaan', [\App\Http\Controllers\Perpustakaan\AuthController::class, 'login'])->name('login_perpustakaan');
+Route::post('login-perpustakaan', [\App\Http\Controllers\Perpustakaan\AuthController::class, 'login_store'])->name('login_perpustakaan.store');
+
+Route::middleware('auth')->prefix('perpustakaan')->name('perpustakaan.')->group(function () {
+    Route::get('dashboard', [\App\Http\Controllers\Perpustakaan\DashboardController::class, 'index'])->name('dashboard');
+    
+    // Buku Export
+    Route::get('buku/export', [\App\Http\Controllers\Perpustakaan\BukuController::class, 'exportExcel'])->name('buku.export');
+    
+    // CRUD Buku & Peminjaman
+    Route::resource('buku', \App\Http\Controllers\Perpustakaan\BukuController::class);
+    Route::resource('peminjaman', \App\Http\Controllers\Perpustakaan\PeminjamanBukuController::class);
+});

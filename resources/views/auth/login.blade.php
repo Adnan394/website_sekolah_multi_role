@@ -358,7 +358,7 @@
                     <div class="input-wrap">
                         <i class="bi bi-lock-fill"></i>
                         <input type="password" id="password" name="password" placeholder="Masukkan password" required>
-                        <button type="button" class="toggle-password" onclick="togglePass()">
+                        <button type="button" class="toggle-password me-4" onclick="togglePass()">
                             <i class="bi bi-eye" id="eyeIcon"></i>
                         </button>
                     </div>
