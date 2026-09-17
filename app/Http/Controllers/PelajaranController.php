@@ -81,8 +81,17 @@ class PelajaranController extends Controller
             'tingkat_min'    => 'required|integer|min:1|max:6',
             'tingkat_max'    => 'required|integer|min:1|max:6|gte:tingkat_min',
             'jam_per_minggu' => 'required|integer|min:1',
-            'deskripsi'      => 'nullable',
-            'is_active'      => 'boolean'
+            'deskripsi'      => 'nullable|string',
+            'is_active'      => 'nullable|boolean'
+        ], [
+            'kode_pelajaran.required' => 'Kode pelajaran wajib diisi.',
+            'kode_pelajaran.unique'   => 'Kode pelajaran sudah digunakan.',
+            'nama_pelajaran.required' => 'Nama pelajaran wajib diisi.',
+            'kategori.required'       => 'Kategori wajib dipilih.',
+            'tingkat_min.required'    => 'Tingkat minimal wajib diisi.',
+            'tingkat_max.required'    => 'Tingkat maksimal wajib diisi.',
+            'tingkat_max.gte'         => 'Tingkat maksimal harus lebih besar atau sama dengan tingkat minimal.',
+            'jam_per_minggu.required' => 'Jam per minggu wajib diisi.',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
