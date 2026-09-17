@@ -237,13 +237,16 @@
     padding: 80px 0;
 }
 .struktur-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 20px;
     max-width: 1100px;
     margin: 0 auto;
 }
 .struktur-card {
+    width: 190px;
+    max-width: 100%;
     background: #ffffff;
     border-radius: 14px;
     padding: 22px 14px 18px;
@@ -368,13 +371,16 @@
     background: linear-gradient(90deg, #890A0A, transparent);
 }
 .struktur-children-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     max-width: 1100px;
     margin: 0 auto;
 }
 .struktur-child-card {
+    width: 165px;
+    max-width: 100%;
     background: #ffffff;
     border-radius: 10px;
     padding: 16px 12px;

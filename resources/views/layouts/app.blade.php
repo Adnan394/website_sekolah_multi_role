@@ -234,12 +234,13 @@
         line-height: 1.5;
     }
     .footer-contact-text a {
-        color: rgba(255,255,255,0.6);
+        color: rgba(255,255,255,0.75) !important;
         text-decoration: none;
         transition: color 0.3s ease;
     }
     .footer-contact-text a:hover {
-        color: #fff;
+        color: #ffffff !important;
+        text-decoration: underline;
     }
     .footer-map-wrap {
         border-radius: 12px;
@@ -338,21 +339,32 @@
 
 
     {{-- Modern Footer --}}
+    @php
+        $kontak_kami = $kontak_kami ?? \App\Models\KontakKami::first();
+    @endphp
     <footer class="footer-modern">
         <div class="container pt-5 pb-3">
             <div class="row g-4 py-3">
                 {{-- Brand Column --}}
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand">
-                        <img src="{{ asset('assets/img/logo.png') }}" alt="Logo">
-                        <span class="footer-brand-text">SDN 3 Krenceng</span>
+                        <img src="{{ ($kontak_kami && $kontak_kami->logo && file_exists(public_path('uploads/kontak/' . $kontak_kami->logo))) ? asset('uploads/kontak/' . $kontak_kami->logo) : asset('assets/img/logo.png') }}" alt="Logo">
+                        <span class="footer-brand-text">{{ $kontak_kami->nama_tempat ?? 'SDN 3 Krenceng' }}</span>
                     </div>
                     <p class="footer-desc">Menanamkan semangat belajar, membentuk generasi cerdas untuk masa depan yang gemilang.</p>
                     <div class="footer-social">
-                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-                        <a href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                        @if($kontak_kami && $kontak_kami->facebook && $kontak_kami->facebook !== '-')
+                            <a href="{{ $kontak_kami->facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        @endif
+                        @if($kontak_kami && $kontak_kami->instagram && $kontak_kami->instagram !== '-')
+                            <a href="{{ $kontak_kami->instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        @endif
+                        @if($kontak_kami && $kontak_kami->youtube && $kontak_kami->youtube !== '-')
+                            <a href="{{ $kontak_kami->youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                        @endif
+                        @if($kontak_kami && $kontak_kami->telepon && $kontak_kami->telepon !== '-')
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $kontak_kami->telepon)) }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                        @endif
                     </div>
                 </div>
 
@@ -360,11 +372,11 @@
                 <div class="col-lg-2 col-md-3 col-6">
                     <h6 class="footer-heading">Menu</h6>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="bi bi-chevron-right"></i>Beranda</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i>Profil</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i>Prestasi</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i>Berita</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i>Tentang Kami</a></li>
+                        <li><a href="/#beranda"><i class="bi bi-chevron-right"></i>Beranda</a></li>
+                        <li><a href="/#profil"><i class="bi bi-chevron-right"></i>Profil</a></li>
+                        <li><a href="/#prestasi"><i class="bi bi-chevron-right"></i>Prestasi</a></li>
+                        <li><a href="/#berita"><i class="bi bi-chevron-right"></i>Berita</a></li>
+                        <li><a href="/#struktur"><i class="bi bi-chevron-right"></i>Struktur</a></li>
                     </ul>
                 </div>
 
@@ -373,15 +385,29 @@
                     <h6 class="footer-heading">Kontak</h6>
                     <div class="footer-contact-item">
                         <div class="footer-contact-icon"><i class="bi bi-telephone-fill"></i></div>
-                        <div class="footer-contact-text"><a href="tel:+628123456789">+628123456789</a></div>
+                        <div class="footer-contact-text">
+                            @if($kontak_kami && $kontak_kami->telepon)
+                                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $kontak_kami->telepon) }}">{{ $kontak_kami->telepon }}</a>
+                            @else
+                                <a href="tel:+628123456789">+628123456789</a>
+                            @endif
+                        </div>
                     </div>
                     <div class="footer-contact-item">
                         <div class="footer-contact-icon"><i class="bi bi-envelope-fill"></i></div>
-                        <div class="footer-contact-text"><a href="mailto:example@gmail.com">example@gmail.com</a></div>
+                        <div class="footer-contact-text">
+                            @if($kontak_kami && $kontak_kami->email)
+                                <a href="mailto:{{ $kontak_kami->email }}">{{ $kontak_kami->email }}</a>
+                            @else
+                                <a href="mailto:example@gmail.com">example@gmail.com</a>
+                            @endif
+                        </div>
                     </div>
                     <div class="footer-contact-item">
                         <div class="footer-contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                        <div class="footer-contact-text">Krenceng, Kec. Krenceng, Kab. Serang, Banten</div>
+                        <div class="footer-contact-text">
+                            {{ $kontak_kami->alamat ?? 'Krenceng, Kec. Krenceng, Kab. Serang, Banten' }}
+                        </div>
                     </div>
                 </div>
 
@@ -389,14 +415,22 @@
                 <div class="col-lg-3 col-md-6">
                     <h6 class="footer-heading">Lokasi</h6>
                     <div class="footer-map-wrap">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12755.705334997747!2d109.44826127461008!3d-7.4058349303966695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6556988952dd07%3A0x1842e263153fddec!2sSD%20Negeri%203%20Krenceng!5e1!3m2!1sid!2sid!4v1759250376728!5m2!1sid!2sid" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        @if($kontak_kami && $kontak_kami->maps_embed)
+                            @if(str_contains($kontak_kami->maps_embed, '<iframe'))
+                                {!! $kontak_kami->maps_embed !!}
+                            @else
+                                <iframe src="{{ $kontak_kami->maps_embed }}" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            @endif
+                        @else
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12755.705334997747!2d109.44826127461008!3d-7.4058349303966695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6556988952dd07%3A0x1842e263153fddec!2sSD%20Negeri%203%20Krenceng!5e1!3m2!1sid!2sid!4v1759250376728!5m2!1sid!2sid" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        @endif
                     </div>
                 </div>
             </div>
 
             {{-- Bottom Bar --}}
             <div class="footer-bottom text-center">
-                <p>Copyright &copy; {{ date('Y') }} SDN 3 Krenceng. Made with <span class="heart"><i class="bi bi-heart-fill"></i></span> for education.</p>
+                <p>Copyright &copy; {{ date('Y') }} {{ $kontak_kami->nama_tempat ?? 'SDN 3 Krenceng' }}. Made with <span class="heart"><i class="bi bi-heart-fill"></i></span> for education.</p>
             </div>
         </div>
     </footer>
