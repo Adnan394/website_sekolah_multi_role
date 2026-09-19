@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <title>Login - SDN 3 Krenceng</title>
+    <title>Daftar Akun - SDN 3 Krenceng</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -19,9 +19,9 @@
             justify-content: center;
             background: linear-gradient(135deg, #f5f0f0 0%, #f8f9fa 50%, #f5f0f0 100%);
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 32px 16px;
         }
-        /* Background decorations */
         body::before {
             content: '';
             position: absolute;
@@ -45,9 +45,9 @@
 
         .login-container {
             display: flex;
-            width: 920px;
+            width: 980px;
             max-width: 95vw;
-            min-height: 540px;
+            min-height: 600px;
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 25px 80px rgba(137,10,10,0.1), 0 4px 20px rgba(0,0,0,0.05);
@@ -90,7 +90,7 @@
         }
         .login-left-img {
             max-width: 85%;
-            max-height: 280px;
+            max-height: 260px;
             object-fit: contain;
             position: relative;
             z-index: 1;
@@ -100,6 +100,9 @@
         @keyframes floatImg {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .login-left-img { animation: none; }
         }
         .login-left-text {
             text-align: center;
@@ -125,16 +128,17 @@
         /* ── Right Panel (Form) ── */
         .login-right {
             flex: 1;
-            padding: 50px 44px;
+            padding: 44px 44px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow-y: auto;
         }
         .login-logo {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
         .login-logo img {
             height: 48px;
@@ -162,7 +166,7 @@
             color: #999;
             font-size: 0.88rem;
             font-weight: 500;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         /* ── Alert ── */
@@ -175,38 +179,42 @@
             font-size: 0.85rem;
             font-weight: 600;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
             margin-bottom: 20px;
             animation: shakeAlert 0.4s ease;
         }
-        .login-alert i {
-            font-size: 1.1rem;
-        }
+        .login-alert i { font-size: 1.1rem; }
+        .login-alert ul { margin: 0; padding-left: 16px; font-weight: 500; }
         @keyframes shakeAlert {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
+        @media (prefers-reduced-motion: reduce) {
+            .login-alert { animation: none; }
+        }
 
         /* ── Form Fields ── */
         .form-group-modern {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             position: relative;
         }
+        .form-row-modern {
+            display: flex;
+            gap: 14px;
+        }
+        .form-row-modern .form-group-modern { flex: 1; }
         .form-group-modern label {
             display: block;
             font-size: 0.82rem;
             font-weight: 700;
             color: #555;
             margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
-        .input-wrap {
-            position: relative;
-        }
-        .input-wrap i {
+        .input-wrap { position: relative; }
+        .input-wrap > i.field-icon {
             position: absolute;
             left: 16px;
             top: 50%;
@@ -214,10 +222,13 @@
             color: #aaa;
             font-size: 1rem;
             transition: color 0.3s ease;
+            pointer-events: none;
         }
-        .input-wrap input {
+        .input-wrap input,
+        .input-wrap select,
+        .input-wrap textarea {
             width: 100%;
-            padding: 14px 16px 14px 46px;
+            padding: 13px 16px 13px 46px;
             border: 2px solid #eee;
             border-radius: 12px;
             font-size: 0.92rem;
@@ -228,22 +239,45 @@
             transition: all 0.3s ease;
             background: #fafafa;
         }
-        .input-wrap input:focus {
+        .input-wrap textarea {
+            resize: vertical;
+            min-height: 78px;
+            padding-top: 13px;
+        }
+        .input-wrap select { appearance: none; cursor: pointer; }
+        .input-wrap input:focus,
+        .input-wrap select:focus,
+        .input-wrap textarea:focus {
             border-color: #890A0A;
             background: #fff;
             box-shadow: 0 4px 16px rgba(137,10,10,0.08);
         }
-        .input-wrap input:focus + i,
-        .input-wrap input:focus ~ i {
+        .input-wrap input:focus ~ i.field-icon,
+        .input-wrap select:focus ~ i.field-icon,
+        .input-wrap textarea:focus ~ i.field-icon {
             color: #890A0A;
         }
-        .input-wrap input::placeholder {
+        .input-wrap input::placeholder,
+        .input-wrap textarea::placeholder {
             color: #bbb;
             font-weight: 400;
         }
+        .input-wrap input.is-invalid,
+        .input-wrap select.is-invalid,
+        .input-wrap textarea.is-invalid {
+            border-color: rgba(137,10,10,0.45);
+            background: rgba(220,53,69,0.04);
+        }
+        .field-error {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #890A0A;
+        }
         .toggle-password {
             position: absolute;
-            right: 16px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
@@ -254,9 +288,7 @@
             padding: 4px;
             transition: color 0.3s ease;
         }
-        .toggle-password:hover {
-            color: #890A0A;
-        }
+        .toggle-password:hover { color: #890A0A; }
 
         /* ── Submit Button ── */
         .btn-login {
@@ -276,19 +308,17 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 20px rgba(137,10,10,0.25);
-            margin-top: 6px;
+            margin-top: 10px;
         }
         .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(137,10,10,0.35);
             background: linear-gradient(135deg, #a00c0c, #c91818);
         }
-        .btn-login:active {
-            transform: translateY(0);
-        }
+        .btn-login:active { transform: translateY(0); }
 
         .login-footer {
-            margin-top: 28px;
+            margin-top: 22px;
             text-align: center;
             font-size: 0.8rem;
             color: #bbb;
@@ -299,15 +329,19 @@
             font-weight: 600;
             text-decoration: none;
         }
-        .login-footer a:hover {
-            text-decoration: underline;
+        .login-footer a:hover { text-decoration: underline; }
+
+        :focus-visible {
+            outline: 2px solid #890A0A;
+            outline-offset: 2px;
         }
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
             .login-left { display: none; }
-            .login-container { max-width: 440px; }
-            .login-right { padding: 36px 28px; }
+            .login-container { max-width: 460px; }
+            .login-right { padding: 32px 26px; }
+            .form-row-modern { flex-direction: column; gap: 0; }
         }
     </style>
 </head>
@@ -318,7 +352,7 @@
             <img src="{{ asset('assets/img/loginpage.png') }}" alt="Illustration" class="login-left-img">
             <div class="login-left-text">
                 <h3>SDN 3 Krenceng</h3>
-                <p>Portal sistem informasi sekolah untuk guru, siswa, dan administrator</p>
+                <p>Buat akun untuk mengakses sistem informasi sekolah</p>
             </div>
         </div>
 
@@ -332,63 +366,98 @@
                 </div>
             </div>
 
-            <h2 class="login-heading">Masuk ke Akun</h2>
-            <p class="login-subheading">Silakan masukkan email dan password Anda</p>
+            <h2 class="login-heading">Daftar Akun</h2>
+            <p class="login-subheading">Lengkapi data di bawah ini untuk membuat akun baru</p>
 
-            @error('email')
+            @if ($errors->any())
                 <div class="login-alert">
                     <i class="bi bi-exclamation-triangle-fill"></i>
-                    {{ $message }}
+                    <div>
+                        Periksa kembali data Anda:
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
-            @enderror
+            @endif
 
-            <form action="{{ route('login_store') }}" method="POST">
+            <form action="{{ route('register_store') }}" method="POST">
                 @csrf
 
                 <div class="form-group-modern">
-                    <label for="email"><i class="bi bi-envelope me-1"></i> Email</label>
+                    <label for="username">Nama Pengguna</label>
                     <div class="input-wrap">
-                        <i class="bi bi-envelope-fill"></i>
-                        <input type="email" id="email" name="email" placeholder="contoh@email.com" value="{{ old('email') }}" required autofocus>
+                        <input type="text" id="username" name="username"
+                               class="@error('username') is-invalid @enderror"
+                               placeholder="Masukkan nama pengguna"
+                               value="{{ old('username') }}" required autofocus>
+                        <i class="bi bi-person-fill field-icon"></i>
                     </div>
+                    @error('username') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="form-group-modern">
-                    <label for="password"><i class="bi bi-lock me-1"></i> Password</label>
+                    <label for="email">Email</label>
                     <div class="input-wrap">
-                        <i class="bi bi-lock-fill"></i>
-                        <input type="password" id="password" name="password" placeholder="Masukkan password" required>
-                        <button type="button" class="toggle-password me-4" onclick="togglePass()">
+                        <input type="email" id="email" name="email"
+                               class="@error('email') is-invalid @enderror"
+                               placeholder="contoh@email.com"
+                               value="{{ old('email') }}" required>
+                        <i class="bi bi-envelope-fill field-icon"></i>
+                    </div>
+                    @error('email') <span class="field-error">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group-modern">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="password" name="password"
+                               class="@error('password') is-invalid @enderror"
+                               placeholder="Minimal 6 karakter" required>
+                        <i class="bi bi-lock-fill field-icon"></i>
+                        <button type="button" class="toggle-password" onclick="togglePass('password','eyeIcon')" aria-label="Tampilkan password">
                             <i class="bi bi-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    @error('password') <span class="field-error">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group-modern">
+                    <label for="password_confirmation">Konfirmasi Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="password_confirmation" name="password_confirmation"
+                               placeholder="Ulangi password" required>
+                        <i class="bi bi-shield-lock-fill field-icon"></i>
+                        <button type="button" class="toggle-password" onclick="togglePass('password_confirmation','eyeIcon2')" aria-label="Tampilkan konfirmasi password">
+                            <i class="bi bi-eye" id="eyeIcon2"></i>
                         </button>
                     </div>
                 </div>
 
                 <button type="submit" class="btn-login">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Masuk
+                    <i class="bi bi-person-plus-fill"></i>
+                    Daftar Sekarang
                 </button>
             </form>
 
-            <div class="login-footer d-flex flex-column gap-4">
-                <a href="{{route('register')}}">Belum Punya Akun? Daftar Akun</a>
-                <a href="/"><i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda</a>
+            <div class="login-footer">
+                Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a>
             </div>
         </div>
     </div>
 
     <script>
-        function togglePass() {
-            const passInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
+        function togglePass(inputId, iconId) {
+            const passInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeIcon.classList.remove('bi-eye');
-                eyeIcon.classList.add('bi-eye-slash');
+                eyeIcon.classList.replace('bi-eye', 'bi-eye-slash');
             } else {
                 passInput.type = 'password';
-                eyeIcon.classList.remove('bi-eye-slash');
-                eyeIcon.classList.add('bi-eye');
+                eyeIcon.classList.replace('bi-eye-slash', 'bi-eye');
             }
         }
     </script>

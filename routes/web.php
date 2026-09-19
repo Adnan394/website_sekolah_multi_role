@@ -23,6 +23,7 @@ use App\Http\Controllers\TugasSiswaController;
 use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::middleware('auth')->group(function () { 
     // Serve storage files via controller when public/storage symlink is not present
     Route::get('storage/files/{path}', [StorageController::class, 'show'])->where('path', '.*');
@@ -160,6 +161,8 @@ Route::get('/berita/{slug}', [BeritaController::class, 'showPublic'])->name('ber
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'login_store'])->name('login_store');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'register_store'])->name('register_store');
 
 // Routes untuk Admin Perpustakaan
 Route::get('login-perpustakaan', [\App\Http\Controllers\Perpustakaan\AuthController::class, 'login'])->name('login_perpustakaan');

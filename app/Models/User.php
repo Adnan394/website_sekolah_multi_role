@@ -2,27 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Kolom yang boleh diisi secara massal (mass assignment).
+     * Disesuaikan dengan struktur tabel `users`.
      */
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'username',
+        'email',
+        'role',
+        'deskripsi',
+        'password',
+    ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Kolom yang disembunyikan saat model diubah ke array/JSON.
      */
     protected $hidden = [
         'password',
@@ -30,18 +31,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casting tipe data kolom.
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
-    public function guru() {
-        return $this->hasOne(\App\Models\Guru::class);
+
+    /**
+     * Helper untuk mengecek peran pengguna.
+     * Contoh penggunaan: if (auth()->user()->hasRole('guru')) { ... }
+     */
+    public function hasRole(string ...$roles): bool
+    {
+        return in_array($this->role, $roles, true);
     }
 }
