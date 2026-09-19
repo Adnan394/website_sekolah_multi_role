@@ -31,6 +31,7 @@ class AuthController extends Controller
             'username.required'  => 'Nama pengguna wajib diisi.',
             'username.unique'    => 'Nama pengguna sudah digunakan.',
             'email.required'     => 'Email wajib diisi.',
+            'role.required'      => 'Peran wajib dipilih.',
             'email.email'        => 'Format email tidak valid.',
             'email.unique'       => 'Email sudah terdaftar.',
         ]);
@@ -38,7 +39,7 @@ class AuthController extends Controller
         $user = User::create([
             'username'  => $request['username'],
             'email'     => $request['email'],
-            'role'      => 'siswa',
+            'role'      => $request['role'],
             'password'  => Hash::make($request['password']),
         ]);
 

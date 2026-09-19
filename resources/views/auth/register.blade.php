@@ -409,7 +409,18 @@
                     </div>
                     @error('email') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
-
+                <div class="form-group-modern">
+                    <label for="role">Peran</label>
+                    <div class="input-wrap">
+                        <select id="role" name="role" class="@error('role') is-invalid @enderror" required>
+                            <option value="" disabled {{ old('role') ? '' : 'selected' }}>Pilih peran pengguna</option>
+                            <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
+                            <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                        </select>
+                        <i class="bi bi-person-badge-fill field-icon"></i>
+                    </div>
+                    @error('role') <span class="field-error">{{ $message }}</span> @enderror
+                </div>
                 <div class="form-group-modern">
                     <label for="password">Password</label>
                     <div class="input-wrap">
