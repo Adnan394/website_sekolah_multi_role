@@ -371,7 +371,6 @@
             </form>
 
             <div class="login-footer d-flex flex-column gap-4">
-                <a href="{{route('register')}}">Belum Punya Akun? Daftar Akun</a>
                 <a href="/"><i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda</a>
             </div>
         </div>

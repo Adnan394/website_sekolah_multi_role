@@ -33,7 +33,7 @@ class Siswa extends Model
 
     public function getFotoUrlAttribute() {
         if ($this->foto && file_exists(storage_path('app/public/' . $this->foto))) {
-            return asset('storage/files/' . $this->foto);
+            return asset('storage/' . $this->foto);
         }
         return "https://ui-avatars.com/api/?name=" . urlencode($this->nama_lengkap) . "&background=random";
     }

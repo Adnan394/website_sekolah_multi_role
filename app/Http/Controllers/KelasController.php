@@ -128,11 +128,37 @@ class KelasController extends Controller
     // ──────────────────────────────────────────────────
     public function show(Kelas $kelas)
     {
-        // Eager-load relasi (aktifkan setelah model guru/siswa tersedia)
-        // $kelas->load(['waliKelas', 'siswa', 'pelajaran']);
+        $kelas->load([
+            'waliKelas',
+            'siswa' => function ($q) {
+                $q->withPivot('nomor_absen', 'status')->orderBy('kelas_siswa.nomor_absen');
+            }
+        ]);
 
-        $active  = 'kelas';
-        return view('admin.kelas.show', compact('kelas', 'active'));
+        $waliKelas = $kelas->waliKelas->first();
+
+        // Ambil guru mapel beserta pelajarannya
+        $guruMapelList = \App\Models\Guru::join('kelas_guru', 'guru.id', '=', 'kelas_guru.guru_id')
+            ->join('pelajaran', 'kelas_guru.pelajaran_id', '=', 'pelajaran.id')
+            ->where('kelas_guru.kelas_id', $kelas->id)
+            ->where('kelas_guru.jabatan', 'guru_mapel')
+            ->select(
+                'guru.*',
+                'pelajaran.nama_pelajaran',
+                'pelajaran.kode_pelajaran'
+            )
+            ->orderBy('pelajaran.nama_pelajaran')
+            ->get();
+
+        // Ambil jadwal pelajaran untuk kelas ini
+        $jadwalList = \App\Models\JadwalPelajaran::with(['pelajaran', 'guru'])
+            ->where('kelas_id', $kelas->id)
+            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+            ->orderBy('jam_ke')
+            ->get();
+
+        $active = 'kelas';
+        return view('admin.kelas.show', compact('kelas', 'waliKelas', 'guruMapelList', 'jadwalList', 'active'));
     }
 
     // ──────────────────────────────────────────────────

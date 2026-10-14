@@ -24,9 +24,10 @@ use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('auth')->group(function () { 
-    // Serve storage files via controller when public/storage symlink is not present
-    Route::get('storage/files/{path}', [StorageController::class, 'show'])->where('path', '.*');
+// Serve storage files via controller when public/storage symlink is not present
+Route::get('storage/files/{path}', [StorageController::class, 'show'])->where('path', '.*');
+
+Route::middleware('auth')->group(function () {
 
     // Siswa
     Route::get('siswa/tugas', [TugasSiswaController::class,'indexSiswa'])->name('siswa-tugas.index');
@@ -120,6 +121,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::delete('kelas-guru/{kelas}/mapel', [KelasGuruController::class, 'removeGuruMapel'])->name('kelas-guru.remove-guru-mapel');
 
     // Data Siswa
+    Route::get('siswa/download-template', [\App\Http\Controllers\SiswaController::class, 'downloadTemplate'])->name('siswa.download-template');
+    Route::post('siswa/import', [\App\Http\Controllers\SiswaController::class, 'import'])->name('siswa.import');
     Route::resource('siswa', \App\Http\Controllers\SiswaController::class);
     
     // Kelola Admin Perpustakaan
@@ -163,8 +166,8 @@ Route::get('/berita/{slug}', [BeritaController::class, 'showPublic'])->name('ber
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'login_store'])->name('login_store');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'register_store'])->name('register_store');
+//Route::get('/register', [AuthController::class, 'register'])->name('register');
+//Route::post('/register', [AuthController::class, 'register_store'])->name('register_store');
 
 // Routes untuk Admin Perpustakaan
 Route::get('login-perpustakaan', [\App\Http\Controllers\Perpustakaan\AuthController::class, 'login'])->name('login_perpustakaan');

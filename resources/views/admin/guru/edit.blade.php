@@ -18,11 +18,20 @@
     <div class="row justify-content-center">
       <div class="col-lg-10">
 
+        @if(session('error'))
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
+
         @if($errors->any())
-          <div class="alert alert-danger">
-            <ul class="mb-0">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="fw-semibold mb-1"><i class="bi bi-exclamation-circle-fill me-2"></i>Terdapat kesalahan pengisian formulir:</div>
+            <ul class="mb-0 ps-3">
               @foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach
             </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         @endif
 
@@ -32,28 +41,28 @@
 
           {{-- Nav Tabs --}}
           <ul class="nav nav-tabs mb-0" id="editTabs" role="tablist">
-            <li class="nav-item">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-akun">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-akun" role="tab">
                 <i class="bi bi-person-lock me-1"></i>Akun Login
               </button>
             </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-identitas">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-identitas" role="tab">
                 <i class="bi bi-person-vcard me-1"></i>Identitas
               </button>
             </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-alamat">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-alamat" role="tab">
                 <i class="bi bi-geo-alt me-1"></i>Alamat
               </button>
             </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-kepegawaian">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-kepegawaian" role="tab">
                 <i class="bi bi-briefcase me-1"></i>Kepegawaian
               </button>
             </li>
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-lain">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-lain" role="tab">
                 <i class="bi bi-gear me-1"></i>Lainnya
               </button>
             </li>
@@ -375,6 +384,23 @@
     document.addEventListener('DOMContentLoaded', function () {
       togglePNSFields();
       toggleSertifikasi();
+
+      @if($errors->hasAny(['nip', 'nuptk', 'jabatan', 'status_kepegawaian', 'golongan', 'tmt_cpns', 'tmt_pns', 'tanggal_bergabung', 'masa_kerja_tahun', 'masa_kerja_bulan', 'is_sertifikasi', 'tahun_sertifikasi', 'nomor_sertifikasi']))
+        const tabEl = document.querySelector('button[data-bs-target="#tab-kepegawaian"]');
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      @elseif($errors->hasAny(['nama_lengkap', 'gelar_depan', 'gelar_belakang', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'agama', 'status_pernikahan', 'foto', 'no_hp', 'no_telp', 'email_pribadi']))
+        const tabEl = document.querySelector('button[data-bs-target="#tab-identitas"]');
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      @elseif($errors->hasAny(['alamat', 'rt', 'rw', 'kelurahan', 'kecamatan', 'kota', 'provinsi', 'kode_pos']))
+        const tabEl = document.querySelector('button[data-bs-target="#tab-alamat"]');
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      @elseif($errors->hasAny(['username', 'email', 'password']))
+        const tabEl = document.querySelector('button[data-bs-target="#tab-akun"]');
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      @elseif($errors->hasAny(['pendidikan_terakhir', 'jurusan', 'universitas', 'tahun_lulus', 'is_active', 'keterangan']))
+        const tabEl = document.querySelector('button[data-bs-target="#tab-lain"]');
+        if (tabEl) bootstrap.Tab.getOrCreateInstance(tabEl).show();
+      @endif
     });
   </script>
 

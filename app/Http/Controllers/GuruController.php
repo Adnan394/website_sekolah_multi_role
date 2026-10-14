@@ -65,76 +65,101 @@ class GuruController extends Controller
     // ──────────────────────────────────────────────────
     public function store(Request $request)
     {
-        // — Validasi Akun ————————————————————————————
-        $request->validate($this->rulesAkun(), $this->messages());
+        // — Validasi Akun & Data Guru ————————————————————————
+        $request->validate(
+            array_merge($this->rulesAkun(), $this->rulesGuru()),
+            $this->messages()
+        );
 
-        // — Validasi Data Guru ————————————————————————
-        $request->validate($this->rulesGuru(), $this->messages());
+        try {
+            DB::transaction(function () use ($request) {
 
-        DB::transaction(function () use ($request) {
+                // 1. Buat akun user
+                $user = User::create([
+                    'username'   => $request->username,
+                    'email'      => $request->email,
+                    'password'   => Hash::make($request->password),
+                    'role'       => 'guru',
+                    'deskripsi'  => $request->deskripsi_akun,
+                ]);
 
-            // 1. Buat akun user
-            $user = User::create([
-                'username'   => $request->username,
-                'email'      => $request->email,
-                'password'   => Hash::make($request->password),
-                'role'       => 'guru',
-                'deskripsi'  => $request->deskripsi_akun,
-            ]);
+                // 2. Upload foto jika ada
+                $fotoPath = null;
+                if ($request->hasFile('foto')) {
+                    $fotoPath = $request->file('foto')->store('foto-guru', 'public');
+                }
 
-            // 2. Upload foto jika ada
-            $fotoPath = null;
-            if ($request->hasFile('foto')) {
-                $fotoPath = $request->file('foto')->store('foto-guru', 'public');
+                // 3. Simpan data guru
+                Guru::create([
+                    'user_id'              => $user->id,
+                    'nip'                  => $request->nip ?: null,
+                    'nuptk'                => $request->nuptk ?: null,
+                    'nama_lengkap'         => $request->nama_lengkap,
+                    'gelar_depan'          => $request->gelar_depan,
+                    'gelar_belakang'       => $request->gelar_belakang,
+                    'tempat_lahir'         => $request->tempat_lahir,
+                    'tanggal_lahir'        => $request->tanggal_lahir,
+                    'jenis_kelamin'        => $request->jenis_kelamin,
+                    'agama'                => $request->agama,
+                    'status_pernikahan'    => $request->status_pernikahan,
+                    'foto'                 => $fotoPath,
+                    'no_hp'                => $request->no_hp,
+                    'no_telp'              => $request->no_telp,
+                    'email_pribadi'        => $request->email_pribadi,
+                    'alamat'               => $request->alamat,
+                    'rt'                   => $request->rt,
+                    'rw'                   => $request->rw,
+                    'kelurahan'            => $request->kelurahan,
+                    'kecamatan'            => $request->kecamatan,
+                    'kota'                 => $request->kota,
+                    'provinsi'             => $request->provinsi,
+                    'kode_pos'             => $request->kode_pos,
+                    'pendidikan_terakhir'  => $request->pendidikan_terakhir,
+                    'jurusan'              => $request->jurusan,
+                    'universitas'          => $request->universitas,
+                    'tahun_lulus'          => $request->tahun_lulus,
+                    'status_kepegawaian'   => $request->status_kepegawaian,
+                    'golongan'             => $request->golongan,
+                    'tmt_cpns'             => $request->tmt_cpns,
+                    'tmt_pns'              => $request->tmt_pns,
+                    'tanggal_bergabung'    => $request->tanggal_bergabung,
+                    'masa_kerja_tahun'     => $request->masa_kerja_tahun ?? 0,
+                    'masa_kerja_bulan'     => $request->masa_kerja_bulan ?? 0,
+                    'jabatan'              => $request->jabatan,
+                    'is_sertifikasi'       => $request->boolean('is_sertifikasi'),
+                    'tahun_sertifikasi'    => $request->tahun_sertifikasi,
+                    'nomor_sertifikasi'    => $request->nomor_sertifikasi,
+                    'is_active'            => $request->boolean('is_active', true),
+                    'keterangan'           => $request->keterangan,
+                ]);
+            });
+
+            return redirect()->route('guru.index')
+                             ->with('success', 'Data guru berhasil ditambahkan.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Terjadi kesalahan basis data saat menyimpan data guru.';
+            $fieldErrors = [];
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
+                if (str_contains($e->getMessage(), 'guru_nip_unique')) {
+                    $msg = 'NIP sudah terdaftar untuk guru lain.';
+                    $fieldErrors['nip'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'guru_nuptk_unique')) {
+                    $msg = 'NUPTK sudah terdaftar untuk guru lain.';
+                    $fieldErrors['nuptk'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'users_username_unique')) {
+                    $msg = 'Username sudah digunakan oleh akun lain.';
+                    $fieldErrors['username'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'users_email_unique')) {
+                    $msg = 'Email sudah digunakan oleh akun lain.';
+                    $fieldErrors['email'] = $msg;
+                } else {
+                    $msg = 'Data unik (NIP/NUPTK/Username/Email) sudah pernah didaftarkan.';
+                }
             }
-
-            // 3. Simpan data guru
-            Guru::create([
-                'user_id'              => $user->id,
-                'nip'                  => $request->nip ?: null,
-                'nuptk'                => $request->nuptk ?: null,
-                'nama_lengkap'         => $request->nama_lengkap,
-                'gelar_depan'          => $request->gelar_depan,
-                'gelar_belakang'       => $request->gelar_belakang,
-                'tempat_lahir'         => $request->tempat_lahir,
-                'tanggal_lahir'        => $request->tanggal_lahir,
-                'jenis_kelamin'        => $request->jenis_kelamin,
-                'agama'                => $request->agama,
-                'status_pernikahan'    => $request->status_pernikahan,
-                'foto'                 => $fotoPath,
-                'no_hp'                => $request->no_hp,
-                'no_telp'              => $request->no_telp,
-                'email_pribadi'        => $request->email_pribadi,
-                'alamat'               => $request->alamat,
-                'rt'                   => $request->rt,
-                'rw'                   => $request->rw,
-                'kelurahan'            => $request->kelurahan,
-                'kecamatan'            => $request->kecamatan,
-                'kota'                 => $request->kota,
-                'provinsi'             => $request->provinsi,
-                'kode_pos'             => $request->kode_pos,
-                'pendidikan_terakhir'  => $request->pendidikan_terakhir,
-                'jurusan'              => $request->jurusan,
-                'universitas'          => $request->universitas,
-                'tahun_lulus'          => $request->tahun_lulus,
-                'status_kepegawaian'   => $request->status_kepegawaian,
-                'golongan'             => $request->golongan,
-                'tmt_cpns'             => $request->tmt_cpns,
-                'tmt_pns'              => $request->tmt_pns,
-                'tanggal_bergabung'    => $request->tanggal_bergabung,
-                'masa_kerja_tahun'     => $request->masa_kerja_tahun ?? 0,
-                'masa_kerja_bulan'     => $request->masa_kerja_bulan ?? 0,
-                'jabatan'              => $request->jabatan,
-                'is_sertifikasi'       => $request->boolean('is_sertifikasi'),
-                'tahun_sertifikasi'    => $request->tahun_sertifikasi,
-                'nomor_sertifikasi'    => $request->nomor_sertifikasi,
-                'is_active'            => $request->boolean('is_active', true),
-                'keterangan'           => $request->keterangan,
-            ]);
-        });
-
-        return redirect()->route('guru.index')
-                         ->with('success', 'Data guru berhasil ditambahkan.');
+            return back()->withInput()->withErrors($fieldErrors)->with('error', $msg);
+        } catch (\Throwable $th) {
+            return back()->withInput()->with('error', 'Gagal menyimpan data guru: ' . $th->getMessage());
+        }
     }
 
     // ──────────────────────────────────────────────────
@@ -168,79 +193,106 @@ class GuruController extends Controller
     // ──────────────────────────────────────────────────
     public function update(Request $request, Guru $guru)
     {
-        // Validasi akun (password opsional saat edit)
-        $request->validate($this->rulesAkunUpdate($guru->user_id), $this->messages());
-        $request->validate($this->rulesGuru(), $this->messages());
+        // Validasi akun (password opsional saat edit) & guru
+        $request->validate(
+            array_merge($this->rulesAkunUpdate($guru->user_id), $this->rulesGuru($guru->id)),
+            $this->messages()
+        );
 
-        DB::transaction(function () use ($request, $guru) {
+        try {
+            DB::transaction(function () use ($request, $guru) {
 
-            // Update akun user
-            $dataUser = [
-                'username'  => $request->username,
-                'email'     => $request->email,
-                'deskripsi' => $request->deskripsi_akun,
-            ];
-            if ($request->filled('password')) {
-                $dataUser['password'] = Hash::make($request->password);
+                // Update akun user
+                $dataUser = [
+                    'username'  => $request->username,
+                    'email'     => $request->email,
+                    'deskripsi' => $request->deskripsi_akun,
+                ];
+                if ($request->filled('password')) {
+                    $dataUser['password'] = Hash::make($request->password);
+                }
+                $guru->user->update($dataUser);
+
+                // Foto baru
+                $fotoPath = $guru->foto;
+                if ($request->hasFile('foto')) {
+                    if ($fotoPath) Storage::disk('public')->delete($fotoPath);
+                    $fotoPath = $request->file('foto')->store('foto-guru', 'public');
+                }
+                if ($request->boolean('hapus_foto') && $fotoPath) {
+                    Storage::disk('public')->delete($fotoPath);
+                    $fotoPath = null;
+                }
+
+                $guru->update([
+                    'nip'                  => $request->nip ?: null,
+                    'nuptk'                => $request->nuptk ?: null,
+                    'nama_lengkap'         => $request->nama_lengkap,
+                    'gelar_depan'          => $request->gelar_depan,
+                    'gelar_belakang'       => $request->gelar_belakang,
+                    'tempat_lahir'         => $request->tempat_lahir,
+                    'tanggal_lahir'        => $request->tanggal_lahir,
+                    'jenis_kelamin'        => $request->jenis_kelamin,
+                    'agama'                => $request->agama,
+                    'status_pernikahan'    => $request->status_pernikahan,
+                    'foto'                 => $fotoPath,
+                    'no_hp'                => $request->no_hp,
+                    'no_telp'              => $request->no_telp,
+                    'email_pribadi'        => $request->email_pribadi,
+                    'alamat'               => $request->alamat,
+                    'rt'                   => $request->rt,
+                    'rw'                   => $request->rw,
+                    'kelurahan'            => $request->kelurahan,
+                    'kecamatan'            => $request->kecamatan,
+                    'kota'                 => $request->kota,
+                    'provinsi'             => $request->provinsi,
+                    'kode_pos'             => $request->kode_pos,
+                    'pendidikan_terakhir'  => $request->pendidikan_terakhir,
+                    'jurusan'              => $request->jurusan,
+                    'universitas'          => $request->universitas,
+                    'tahun_lulus'          => $request->tahun_lulus,
+                    'status_kepegawaian'   => $request->status_kepegawaian,
+                    'golongan'             => $request->golongan,
+                    'tmt_cpns'             => $request->tmt_cpns,
+                    'tmt_pns'              => $request->tmt_pns,
+                    'tanggal_bergabung'    => $request->tanggal_bergabung,
+                    'masa_kerja_tahun'     => $request->masa_kerja_tahun ?? 0,
+                    'masa_kerja_bulan'     => $request->masa_kerja_bulan ?? 0,
+                    'jabatan'              => $request->jabatan,
+                    'is_sertifikasi'       => $request->boolean('is_sertifikasi'),
+                    'tahun_sertifikasi'    => $request->tahun_sertifikasi,
+                    'nomor_sertifikasi'    => $request->nomor_sertifikasi,
+                    'is_active'            => $request->boolean('is_active'),
+                    'keterangan'           => $request->keterangan,
+                ]);
+            });
+
+            return redirect()->route('guru.show', $guru)
+                             ->with('success', 'Data guru berhasil diperbarui.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Terjadi kesalahan basis data saat memperbarui data guru.';
+            $fieldErrors = [];
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
+                if (str_contains($e->getMessage(), 'guru_nip_unique')) {
+                    $msg = 'NIP sudah terdaftar untuk guru lain.';
+                    $fieldErrors['nip'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'guru_nuptk_unique')) {
+                    $msg = 'NUPTK sudah terdaftar untuk guru lain.';
+                    $fieldErrors['nuptk'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'users_username_unique')) {
+                    $msg = 'Username sudah digunakan oleh akun lain.';
+                    $fieldErrors['username'] = $msg;
+                } elseif (str_contains($e->getMessage(), 'users_email_unique')) {
+                    $msg = 'Email sudah digunakan oleh akun lain.';
+                    $fieldErrors['email'] = $msg;
+                } else {
+                    $msg = 'Data unik (NIP/NUPTK/Username/Email) sudah pernah didaftarkan.';
+                }
             }
-            $guru->user->update($dataUser);
-
-            // Foto baru
-            $fotoPath = $guru->foto;
-            if ($request->hasFile('foto')) {
-                if ($fotoPath) Storage::disk('public')->delete($fotoPath);
-                $fotoPath = $request->file('foto')->store('foto-guru', 'public');
-            }
-            if ($request->boolean('hapus_foto') && $fotoPath) {
-                Storage::disk('public')->delete($fotoPath);
-                $fotoPath = null;
-            }
-
-            $guru->update([
-                'nip'                  => $request->nip ?: null,
-                'nuptk'                => $request->nuptk ?: null,
-                'nama_lengkap'         => $request->nama_lengkap,
-                'gelar_depan'          => $request->gelar_depan,
-                'gelar_belakang'       => $request->gelar_belakang,
-                'tempat_lahir'         => $request->tempat_lahir,
-                'tanggal_lahir'        => $request->tanggal_lahir,
-                'jenis_kelamin'        => $request->jenis_kelamin,
-                'agama'                => $request->agama,
-                'status_pernikahan'    => $request->status_pernikahan,
-                'foto'                 => $fotoPath,
-                'no_hp'                => $request->no_hp,
-                'no_telp'              => $request->no_telp,
-                'email_pribadi'        => $request->email_pribadi,
-                'alamat'               => $request->alamat,
-                'rt'                   => $request->rt,
-                'rw'                   => $request->rw,
-                'kelurahan'            => $request->kelurahan,
-                'kecamatan'            => $request->kecamatan,
-                'kota'                 => $request->kota,
-                'provinsi'             => $request->provinsi,
-                'kode_pos'             => $request->kode_pos,
-                'pendidikan_terakhir'  => $request->pendidikan_terakhir,
-                'jurusan'              => $request->jurusan,
-                'universitas'          => $request->universitas,
-                'tahun_lulus'          => $request->tahun_lulus,
-                'status_kepegawaian'   => $request->status_kepegawaian,
-                'golongan'             => $request->golongan,
-                'tmt_cpns'             => $request->tmt_cpns,
-                'tmt_pns'              => $request->tmt_pns,
-                'tanggal_bergabung'    => $request->tanggal_bergabung,
-                'masa_kerja_tahun'     => $request->masa_kerja_tahun ?? 0,
-                'masa_kerja_bulan'     => $request->masa_kerja_bulan ?? 0,
-                'jabatan'              => $request->jabatan,
-                'is_sertifikasi'       => $request->boolean('is_sertifikasi'),
-                'tahun_sertifikasi'    => $request->tahun_sertifikasi,
-                'nomor_sertifikasi'    => $request->nomor_sertifikasi,
-                'is_active'            => $request->boolean('is_active'),
-                'keterangan'           => $request->keterangan,
-            ]);
-        });
-
-        return redirect()->route('guru.show', $guru)
-                         ->with('success', 'Data guru berhasil diperbarui.');
+            return back()->withInput()->withErrors($fieldErrors)->with('error', $msg);
+        } catch (\Throwable $th) {
+            return back()->withInput()->with('error', 'Gagal memperbarui data guru: ' . $th->getMessage());
+        }
     }
 
     // ──────────────────────────────────────────────────
@@ -308,12 +360,12 @@ class GuruController extends Controller
         ];
     }
 
-    private function rulesGuru(): array
+    private function rulesGuru(?int $ignoreId = null): array
     {
         return [
             'nama_lengkap'        => 'required|string|max:150',
-            'nip'                 => 'nullable|string|max:20',
-            'nuptk'               => 'nullable|string|max:20',
+            'nip'                 => ['nullable', 'string', 'max:20', Rule::unique('guru', 'nip')->ignore($ignoreId)],
+            'nuptk'               => ['nullable', 'string', 'max:20', Rule::unique('guru', 'nuptk')->ignore($ignoreId)],
             'tanggal_lahir'       => 'nullable|date',
             'jenis_kelamin'       => 'nullable|in:L,P',
             'agama'               => 'nullable|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
@@ -335,17 +387,19 @@ class GuruController extends Controller
     private function messages(): array
     {
         return [
-            'username.required'       => 'Username wajib diisi.',
-            'username.unique'         => 'Username sudah digunakan.',
-            'email.required'          => 'Email wajib diisi.',
-            'email.unique'            => 'Email sudah terdaftar.',
-            'password.required'       => 'Password wajib diisi.',
-            'password.min'            => 'Password minimal 8 karakter.',
-            'password.confirmed'      => 'Konfirmasi password tidak cocok.',
-            'nama_lengkap.required'   => 'Nama lengkap wajib diisi.',
-            'jabatan.required'        => 'Jabatan wajib dipilih.',
+            'username.required'           => 'Username wajib diisi.',
+            'username.unique'             => 'Username sudah digunakan oleh akun lain.',
+            'email.required'              => 'Email wajib diisi.',
+            'email.unique'                => 'Email sudah terdaftar untuk akun lain.',
+            'password.required'           => 'Password wajib diisi.',
+            'password.min'                => 'Password minimal 8 karakter.',
+            'password.confirmed'          => 'Konfirmasi password tidak cocok.',
+            'nama_lengkap.required'       => 'Nama lengkap wajib diisi.',
+            'nip.unique'                  => 'NIP sudah terdaftar untuk guru lain.',
+            'nuptk.unique'                => 'NUPTK sudah terdaftar untuk guru lain.',
+            'jabatan.required'            => 'Jabatan wajib dipilih.',
             'status_kepegawaian.required' => 'Status kepegawaian wajib dipilih.',
-            'foto.image'              => 'File harus berupa gambar.',
+            'foto.image'                  => 'File harus berupa gambar.',
             'foto.max'                => 'Ukuran foto maksimal 2MB.',
             'masa_kerja_bulan.max'    => 'Masa kerja bulan maksimal 11.',
         ];

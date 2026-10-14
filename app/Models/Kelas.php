@@ -117,17 +117,11 @@ class Kelas extends Model
     }
 
     /**
-     * Pelajaran yang diajarkan di kelas ini.
+     * Jadwal pelajaran di kelas ini.
      */
-    public function pelajaran()
+    public function jadwalPelajaran()
     {
-        return $this->belongsToMany(
-            \App\Models\Pelajaran::class,
-            'kelas_pelajaran',
-            'kelas_id',
-            'pelajaran_id'
-        )->withPivot('guru_id', 'jadwal')
-         ->withTimestamps();
+        return $this->hasMany(JadwalPelajaran::class, 'kelas_id');
     }
 
     // ──────────────────────────────────────────────────
@@ -143,9 +137,7 @@ class Kelas extends Model
     /** Jumlah siswa aktif */
     public function getJumlahSiswaAttribute(): int
     {
-        // Aktif setelah modul siswa tersedia
-        // return $this->siswa()->wherePivot('status', 'aktif')->count();
-        return 0;
+        return $this->siswa()->wherePivot('status', 'Aktif')->count();
     }
 
     // ──────────────────────────────────────────────────

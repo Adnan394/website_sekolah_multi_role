@@ -396,6 +396,14 @@
                 showConfirmButton: true,
             });
         }
+        if('{{ session('warning') }}'){
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: '{{ session('warning') }}',
+                showConfirmButton: true,
+            });
+        }
     </script>
     {{-- @stack('script') --}}
   </body>
